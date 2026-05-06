@@ -1,0 +1,2188 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telecom Tools Suite</title>
+
+    <!-- Bibliotecas Externas via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/libphonenumber-js@1.10.x/bundle/libphonenumber-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+    <!-- Fontes (Nunito e JetBrains Mono) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Configuração do Sistema de Temas e Tailwind -->
+    <style>
+        /* 1. VARIÁVEIS DO SISTEMA DE TEMAS */
+        :root[data-theme="light"] {
+            --bg-base: #f0efeb;
+            --text-base: #1b222b;
+            --bg-sidebar: rgba(255, 255, 255, 0.8);
+            --bg-panel: #ffffff;
+            --text-panel: #1b222b;
+            --border-color: rgba(27, 34, 43, 0.05);
+            --accent-blue: #2563eb;
+            --accent-green: #55c977;
+            --accent-slate: #9fb4c4;
+            --radius-main: 24px;
+            /* Squircles */
+            --radius-sm: 16px;
+            --font-ui: 'Nunito', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --border-w: 1px;
+            --shadow-main: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            --display-retro-title: none;
+        }
+
+        :root[data-theme="dark"] {
+            --bg-base: #1b222b;
+            --text-base: #f0efeb;
+            --bg-sidebar: rgba(36, 43, 53, 0.9);
+            --bg-panel: #242b35;
+            --text-panel: #f0efeb;
+            --border-color: rgba(240, 239, 235, 0.05);
+            --accent-blue: #2563eb;
+            --accent-green: #55c977;
+            --accent-slate: #9fb4c4;
+            --radius-main: 24px;
+            --radius-sm: 16px;
+            --font-ui: 'Nunito', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --border-w: 1px;
+            --shadow-main: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --display-retro-title: none;
+        }
+
+        :root[data-theme="bt"] {
+            --bg-base: #f4f6f8;
+            /* Corporativo Claro */
+            --text-base: #333333;
+            --bg-sidebar: #ffffff;
+            --bg-panel: #ffffff;
+            --text-panel: #333333;
+            --border-color: #e2e8f0;
+            --accent-blue: #6400aa;
+            /* BT Purple */
+            --accent-green: #e60000;
+            /* BT Red / Alert */
+            --accent-slate: #64748b;
+            --radius-main: 8px;
+            /* Cantos corporativos modernos, menos curvos */
+            --radius-sm: 6px;
+            --font-ui: 'Nunito', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --border-w: 1px;
+            --shadow-main: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --display-retro-title: none;
+        }
+
+        :root[data-theme="matrix"] {
+            --bg-base: #000000;
+            --text-base: #00FF41;
+            /* Matrix Green */
+            --bg-sidebar: rgba(0, 15, 0, 0.9);
+            --bg-panel: #050505;
+            --text-panel: #00FF41;
+            --border-color: #00FF41;
+            --accent-blue: #008F11;
+            /* Darker Green */
+            --accent-green: #00FF41;
+            --accent-slate: #003B00;
+            --radius-main: 0px;
+            --radius-sm: 0px;
+            --font-ui: 'JetBrains Mono', monospace;
+            /* Tudo monospace */
+            --font-mono: 'JetBrains Mono', monospace;
+            --border-w: 1px;
+            --shadow-main: 0 0 10px rgba(0, 255, 65, 0.1);
+            --display-retro-title: none;
+        }
+
+        :root[data-theme="arsenal"] {
+            --bg-base: #021a36;
+            /* Dark Arsenal Navy - VIP Vibe */
+            --text-base: #ffffff;
+            --bg-sidebar: rgba(6, 54, 114, 0.95);
+            /* Arsenal Navy */
+            --bg-panel: #063672;
+            --text-panel: #ffffff;
+            --border-color: #9C824A;
+            /* Arsenal Gold */
+            --accent-blue: #EF0107;
+            /* Cannon Red (Botões principais) */
+            --accent-green: #9C824A;
+            /* Arsenal Gold (Sucesso) */
+            --accent-slate: #8da4c4;
+            /* Texto secundário */
+            --radius-main: 12px;
+            /* Ligeiramente mais desportivo e sólido */
+            --radius-sm: 8px;
+            --font-ui: 'Nunito', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --border-w: 2px;
+            --shadow-main: 4px 4px 0px rgba(156, 130, 74, 0.4);
+            /* Sombra Dourada sólida */
+            --display-retro-title: none;
+        }
+
+        :root[data-theme="retro"] {
+            --bg-base: #008080;
+            /* Old school Teal */
+            --text-base: #000000;
+            --bg-sidebar: #c0c0c0;
+            /* Classic Grey */
+            --bg-panel: #c0c0c0;
+            --text-panel: #000000;
+            --border-color: #000000;
+            --accent-blue: #000080;
+            /* Old school Dark Blue */
+            --accent-green: #008000;
+            --accent-slate: #808080;
+            --radius-main: 0px;
+            /* Bordas Secas */
+            --radius-sm: 0px;
+            --font-ui: 'Tahoma', 'MS Sans Serif', sans-serif;
+            --font-mono: 'Courier New', monospace;
+            --border-w: 2px;
+            --shadow-main: 4px 4px 0px 0px #000000;
+            --display-retro-title: flex;
+        }
+
+        /* 2. ESTILOS GLOBAIS E TRANSIÇÕES */
+        body {
+            font-family: var(--font-ui);
+            background-color: var(--bg-base);
+            color: var(--text-base);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .font-mono {
+            font-family: var(--font-mono);
+        }
+
+        /* 3. COMPONENTES REUTILIZÁVEIS BASEADOS NAS VARIÁVEIS */
+        .panel {
+            background-color: var(--bg-panel);
+            color: var(--text-panel);
+            border-radius: var(--radius-main);
+            border: var(--border-w) solid var(--border-color);
+            box-shadow: var(--shadow-main);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .sidebar-glass {
+            background-color: var(--bg-sidebar);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius-main);
+            box-shadow: var(--shadow-main);
+            border: var(--border-w) solid var(--border-color);
+        }
+
+        .input-box {
+            background-color: var(--bg-base);
+            color: var(--text-base);
+            border-radius: var(--radius-sm);
+            border: var(--border-w) solid var(--border-color);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-box:focus {
+            border-color: var(--accent-blue);
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: white;
+            border-radius: var(--radius-sm);
+            border: var(--border-w) solid var(--border-color);
+            transition: transform 0.1s, background-color 0.2s;
+            box-shadow: var(--shadow-main);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-success {
+            background-color: var(--accent-green);
+            color: white;
+            border-radius: var(--radius-sm);
+            border: var(--border-w) solid var(--border-color);
+            transition: transform 0.1s, background-color 0.2s;
+            box-shadow: var(--shadow-main);
+        }
+
+        .btn-success:active {
+            transform: scale(0.97);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-base);
+            border-radius: var(--radius-sm);
+            border: var(--border-w) solid var(--border-color);
+            transition: background-color 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+        }
+
+        .nav-btn {
+            border-radius: var(--radius-sm);
+            color: var(--text-base);
+            opacity: 0.8;
+            transition: all 0.2s;
+            border: var(--border-w) solid transparent;
+        }
+
+        .nav-btn:hover {
+            opacity: 1;
+            background-color: var(--border-color);
+            transform: translateX(4px);
+        }
+
+        .nav-btn.active {
+            background-color: var(--accent-blue);
+            color: white;
+            opacity: 1;
+            box-shadow: var(--shadow-main);
+            border-color: var(--border-color);
+        }
+
+        /* TWEAKS MODO BT (BRITISH TELECOM) */
+        :root[data-theme="bt"] .btn-success {
+            background-color: #008a00;
+            /* Verde escuro para BT Success ao invés do vermelho alerta */
+        }
+
+        :root[data-theme="bt"] .input-box:focus {
+            box-shadow: 0 0 0 3px rgba(100, 0, 170, 0.2);
+        }
+
+        /* TWEAKS MODO MATRIX */
+        :root[data-theme="matrix"] * {
+            text-shadow: 0 0 2px rgba(0, 255, 65, 0.3);
+        }
+
+        :root[data-theme="matrix"] .btn-primary {
+            background-color: rgba(0, 143, 17, 0.2);
+            color: var(--text-base);
+        }
+
+        :root[data-theme="matrix"] .btn-primary:hover,
+        :root[data-theme="matrix"] .nav-btn.active {
+            background-color: rgba(0, 255, 65, 0.2);
+            color: #ffffff;
+            text-shadow: 0 0 5px #00FF41;
+            box-shadow: 0 0 10px var(--accent-green);
+        }
+
+        :root[data-theme="matrix"] .btn-success {
+            background-color: rgba(0, 255, 65, 0.1);
+            color: var(--text-base);
+        }
+
+        :root[data-theme="matrix"] .input-box:focus {
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+        }
+
+        /* TWEAKS MODO ARSENAL */
+        :root[data-theme="arsenal"] .btn-primary {
+            background-color: var(--accent-blue);
+            color: white;
+            border-color: var(--border-color);
+        }
+
+        :root[data-theme="arsenal"] .btn-success {
+            background-color: var(--accent-green);
+            color: #021a36;
+            border-color: var(--border-color);
+            font-weight: 800;
+        }
+
+        :root[data-theme="arsenal"] .nav-btn.active {
+            background-color: var(--accent-blue);
+            color: white;
+            border-color: var(--border-color);
+            box-shadow: 2px 2px 0px var(--border-color);
+            transform: translateX(2px) translateY(-2px);
+        }
+
+        :root[data-theme="arsenal"] .drop-zone:hover,
+        :root[data-theme="arsenal"] .drop-zone.dragover {
+            background-color: rgba(239, 1, 7, 0.2);
+            border-color: var(--accent-blue);
+        }
+
+        :root[data-theme="arsenal"] .input-box {
+            background-color: #021a36;
+            color: #ffffff;
+        }
+
+        :root[data-theme="arsenal"] .input-box:focus {
+            box-shadow: 0 0 0 2px rgba(239, 1, 7, 0.6);
+        }
+
+        /* TWEAKS GERAIS PARA LOGOS DINÂMICOS */
+        #logo-bg,
+        #home-logo-bg {
+            transition: background 0.3s, border 0.3s;
+        }
+
+        :root[data-theme="bt"] #logo-bg,
+        :root[data-theme="bt"] #home-logo-bg {
+            background: var(--accent-blue) !important;
+        }
+
+        :root[data-theme="bt"] #logo-text {
+            color: var(--accent-blue) !important;
+        }
+
+        :root[data-theme="matrix"] #logo-bg,
+        :root[data-theme="matrix"] #home-logo-bg {
+            background: #000000 !important;
+            border: 1px solid #00FF41 !important;
+            box-shadow: 0 0 10px #00FF41 !important;
+        }
+
+        :root[data-theme="matrix"] #logo-bg i,
+        :root[data-theme="matrix"] #home-logo-bg i {
+            color: #00FF41 !important;
+        }
+
+        :root[data-theme="matrix"] #logo-text {
+            color: #00FF41 !important;
+        }
+
+        :root[data-theme="arsenal"] #logo-bg,
+        :root[data-theme="arsenal"] #home-logo-bg {
+            background: #EF0107 !important;
+            border: 2px solid #9C824A !important;
+        }
+
+        :root[data-theme="arsenal"] #logo-text {
+            color: #ffffff !important;
+            text-shadow: 2px 2px 0px #EF0107;
+        }
+
+        :root[data-theme="retro"] #logo-bg,
+        :root[data-theme="retro"] #home-logo-bg {
+            background: #c0c0c0 !important;
+            border: 2px solid black !important;
+            box-shadow: inset -1px -1px #000, inset 1px 1px #fff !important;
+        }
+
+        :root[data-theme="retro"] #logo-bg i,
+        :root[data-theme="retro"] #home-logo-bg i {
+            color: #000000 !important;
+        }
+
+        :root[data-theme="retro"] #logo-text {
+            color: #000000 !important;
+            text-shadow: none;
+        }
+
+        /* 4. MODIFICAÇÕES EXCLUSIVAS DO MODO RETRO (Old school) */
+        .retro-titlebar {
+            display: var(--display-retro-title);
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 4px 12px;
+            font-weight: bold;
+            border-bottom: 2px solid black;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .retro-titlebar-btn {
+            background-color: #c0c0c0;
+            color: black;
+            border: 1px solid black;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: inset -1px -1px #000, inset 1px 1px #fff;
+            cursor: pointer;
+        }
+
+        :root[data-theme="retro"] .btn-primary,
+        :root[data-theme="retro"] .btn-success,
+        :root[data-theme="retro"] .btn-secondary,
+        :root[data-theme="retro"] .nav-btn {
+            background-color: #c0c0c0;
+            color: black;
+            box-shadow: inset -1px -1px #000, inset 1px 1px #fff;
+            border: 2px solid black;
+            border-radius: 0;
+            transform: none !important;
+            font-weight: bold;
+        }
+
+        :root[data-theme="retro"] .nav-btn.active {
+            background-color: #ffffff;
+        }
+
+        :root[data-theme="retro"] .btn-primary:active,
+        :root[data-theme="retro"] .btn-success:active,
+        :root[data-theme="retro"] .btn-secondary:active,
+        :root[data-theme="retro"] .nav-btn:active {
+            box-shadow: inset 1px 1px #000, inset -1px -1px #fff;
+        }
+
+        :root[data-theme="retro"] .input-box {
+            background-color: #ffffff;
+            color: #000000;
+            box-shadow: inset 1px 1px #000, inset -1px -1px #fff;
+        }
+
+        /* Tweak especial pro select e date em Old school */
+        :root[data-theme="retro"] select.input-box,
+        :root[data-theme="retro"] input[type="date"].input-box,
+        :root[data-theme="retro"] input[type="file"].input-box {
+            appearance: none;
+            /* remove styles default */
+            padding-right: 8px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-slate);
+            border-radius: var(--radius-sm);
+        }
+
+        :root[data-theme="retro"] ::-webkit-scrollbar-thumb {
+            border-radius: 0;
+            border: 1px solid black;
+        }
+
+        :root[data-theme="matrix"] ::-webkit-scrollbar-thumb {
+            background: var(--accent-blue);
+            border-radius: 0;
+            border: 1px solid var(--accent-green);
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .view-section.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilo da Dropzone do Conversor de Áudio */
+        .drop-zone {
+            border: 2px dashed var(--accent-slate);
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: var(--accent-blue);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        :root[data-theme="retro"] .drop-zone {
+            border: 2px solid black;
+            background-color: #ffffff;
+            border-radius: 0;
+            box-shadow: inset 1px 1px #000, inset -1px -1px #fff;
+        }
+
+        :root[data-theme="matrix"] .drop-zone:hover,
+        :root[data-theme="matrix"] .drop-zone.dragover {
+            background-color: rgba(0, 255, 65, 0.1);
+        }
+    </style>
+</head>
+
+<body class="flex h-screen w-full overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="w-72 flex-shrink-0 flex flex-col justify-between p-6 m-4 sidebar-glass z-10 overflow-y-auto">
+        <!-- Retro Titlebar for Sidebar -->
+        <div class="retro-titlebar -mx-6 -mt-6 mb-6">
+            <span>Program Manager</span>
+            <div class="retro-titlebar-btn">-</div>
+        </div>
+
+        <div>
+            <div class="flex items-center gap-3 mb-10 px-2">
+                <div id="logo-bg"
+                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563eb] to-[#55c977] flex items-center justify-center shadow-lg"
+                    style="border-radius: var(--radius-sm);">
+                    <i data-lucide="phone" class="text-white w-5 h-5"></i>
+                </div>
+                <h1 id="logo-text" class="text-xl font-extrabold text-[var(--accent-blue)]">
+                    Telecom Tools
+                </h1>
+            </div>
+
+            <nav class="space-y-2" id="nav-menu">
+                <button onclick="switchView('home')"
+                    class="nav-btn active w-full flex items-center gap-3 px-4 py-3 font-semibold">
+                    <i data-lucide="home" class="w-5 h-5"></i> <span data-i18n="home">Início</span>
+                </button>
+                <button onclick="switchView('lookup')"
+                    class="nav-btn w-full flex items-center gap-3 px-4 py-3 font-semibold">
+                    <i data-lucide="search" class="w-5 h-5"></i> <span data-i18n="lookup">Busca e Validador</span>
+                </button>
+                <button onclick="switchView('splitter')"
+                    class="nav-btn w-full flex items-center gap-3 px-4 py-3 font-semibold">
+                    <i data-lucide="scissors" class="w-5 h-5"></i> <span data-i18n="splitter">Gerenciador de
+                        Range</span>
+                </button>
+                <button onclick="switchView('capacity')"
+                    class="nav-btn w-full flex items-center gap-3 px-4 py-3 font-semibold">
+                    <i data-lucide="calculator" class="w-5 h-5"></i> <span data-i18n="capacity">Capacidade (CAC)</span>
+                </button>
+                <button onclick="switchView('dialplan')"
+                    class="nav-btn w-full flex items-center gap-3 px-4 py-3 font-semibold">
+                    <i data-lucide="globe" class="w-5 h-5"></i> <span data-i18n="dialplan">Global Dial Plan</span>
+                </button>
+                <button onclick="switchView('timezone')"
+                    class="nav-btn w-full flex items-center gap-3 px-4 py-3 font-semibold">
+                    <i data-lucide="clock" class="w-5 h-5"></i> <span data-i18n="tzMenu">Match de Fuso</span>
+                </button>
+                <button onclick="switchView('audio')"
+                    class="nav-btn w-full flex items-center gap-3 px-4 py-3 font-semibold">
+                    <i data-lucide="mic" class="w-5 h-5"></i> <span data-i18n="audioMenu">Conversor URA</span>
+                </button>
+                <button onclick="switchView('tts')"
+                    class="nav-btn w-full flex items-center gap-3 px-4 py-3 font-semibold">
+                    <i data-lucide="message-square" class="w-5 h-5"></i> <span data-i18n="ttsMenu">Text to Speech</span>
+                </button>
+                <button onclick="switchView('ura-templates')"
+                    class="nav-btn w-full flex items-center gap-3 px-4 py-3 font-semibold">
+                    <i data-lucide="git-merge" class="w-5 h-5"></i> <span data-i18n="uraMenu">Modelos de URA</span>
+                </button>
+            </nav>
+        </div>
+
+        <div class="space-y-4 mt-6">
+            <button onclick="cycleTheme()" id="btn-theme"
+                class="btn-secondary w-full flex items-center justify-center gap-2 px-4 py-3 font-bold">
+                <i data-lucide="sun" class="w-5 h-5"></i> <span id="theme-label">Tema: Light</span>
+            </button>
+
+            <div class="flex justify-center gap-2 p-2 panel">
+                <button onclick="setLang('en-GB')"
+                    class="px-2 py-1 text-sm font-bold opacity-60 hover:opacity-100 transition-opacity"
+                    id="lang-en-GB">🇬🇧</button>
+                <button onclick="setLang('pt-BR')"
+                    class="px-2 py-1 text-sm font-bold opacity-100 border-b-2 border-[var(--accent-blue)]"
+                    id="lang-pt-BR">🇧🇷</button>
+                <button onclick="setLang('es-CO')"
+                    class="px-2 py-1 text-sm font-bold opacity-60 hover:opacity-100 transition-opacity"
+                    id="lang-es-CO">🇨🇴</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto p-4 pr-8 pb-8 relative">
+
+        <!-- ================= VIEW: HOME ================= -->
+        <div id="view-home" class="view-section active h-full items-center justify-center">
+            <div id="home-logo-bg"
+                class="w-24 h-24 bg-gradient-to-br from-[#2563eb] to-[#55c977] flex items-center justify-center shadow-2xl mb-8 rotate-3 transition-transform hover:rotate-6"
+                style="border-radius: var(--radius-main);">
+                <i data-lucide="phone" class="text-white w-12 h-12"></i>
+            </div>
+            <h1 class="text-5xl font-extrabold tracking-tight mb-4 text-center" data-i18n="homeTitle">Telecom Tools
+                Suite</h1>
+            <p class="text-xl mb-12 opacity-70 font-semibold" data-i18n="homeSub">Selecione uma das aplicações no menu
+                lateral para iniciar.</p>
+        </div>
+
+        <!-- ================= VIEW: LOOKUP ================= -->
+        <div id="view-lookup" class="view-section h-full max-w-4xl mx-auto mt-8">
+            <h2 class="text-3xl font-bold mb-8" data-i18n="lookTitle">Busca e Validador de DDI</h2>
+
+            <div class="panel p-6 flex flex-wrap items-center gap-4 mb-8">
+                <div class="retro-titlebar -mx-6 -mt-6 mb-6 w-[calc(100%+3rem)]"><span>Number_Lookup.exe</span>
+                    <div class="retro-titlebar-btn">?</div>
+                </div>
+                <div class="flex-1 min-w-[250px]">
+                    <input type="text" id="lookup-input" placeholder="+55 11 98765 4321"
+                        class="input-box w-full font-mono text-lg p-4">
+                </div>
+                <button onclick="analyzeNumber()" class="btn-primary py-4 px-8 font-bold flex items-center gap-2">
+                    <i data-lucide="search" class="w-5 h-5"></i> <span data-i18n="btnAnalyse">Analisar</span>
+                </button>
+                <button onclick="clearLookup()" class="btn-secondary py-4 px-6 font-bold"
+                    data-i18n="btnClear">Limpar</button>
+            </div>
+
+            <div id="lookup-error"
+                class="hidden panel p-6 border-l-8 border-red-500 mb-8 flex items-center gap-3 bg-red-100 text-red-700">
+                <i data-lucide="alert-circle"></i> <span id="lookup-error-msg" class="font-bold"></span>
+            </div>
+
+            <div id="lookup-result" class="hidden panel p-8 border-l-8 border-[var(--accent-green)]">
+                <div class="retro-titlebar -mx-8 -mt-8 mb-6 w-[calc(100%+4rem)]"><span>Result_Data</span>
+                    <div class="retro-titlebar-btn">_</div>
+                </div>
+                <h3 id="res-e164" class="text-4xl font-extrabold text-[var(--accent-blue)] mb-8 font-mono"></h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-lg">
+                    <div>
+                        <p class="text-sm font-bold uppercase mb-1 opacity-70" data-i18n="resCountry">País (DDI):</p>
+                        <p class="font-semibold flex items-center gap-2"><i data-lucide="map-pin"
+                                class="w-5 h-5 text-[var(--accent-green)]"></i> <span id="res-country"></span></p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold uppercase mb-1 opacity-70" data-i18n="resNational">Formato Nacional:
+                        </p>
+                        <p id="res-national" class="font-mono"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold uppercase mb-1 opacity-70" data-i18n="resType">Tipo Estimado:</p>
+                        <span id="res-type"
+                            class="px-3 py-1 bg-[var(--accent-blue)] text-white rounded-full text-sm font-bold shadow-sm"
+                            style="border-radius: var(--radius-sm);"></span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold uppercase mb-1 opacity-70" data-i18n="resUri">SIP URI:</p>
+                        <p id="res-uri" class="font-mono input-box p-2 inline-block"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: SPLITTER ================= -->
+        <div id="view-splitter" class="view-section h-full mt-8">
+            <h2 class="text-3xl font-bold mb-8" data-i18n="splitTitle">Gerenciador de Range de DDI</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1">
+                <div class="panel p-6 h-fit">
+                    <div class="retro-titlebar -mx-6 -mt-6 mb-6 w-[calc(100%+3rem)]"><span>Settings.ini</span>
+                        <div class="retro-titlebar-btn">-</div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-6 flex items-center gap-2"><i data-lucide="scissors"
+                            class="text-[var(--accent-slate)]"></i> <span data-i18n="splitConf">1. Configurações</span>
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="startDdi">Início</label>
+                            <input type="text" id="split-start" placeholder="+551140001000"
+                                class="input-box w-full font-mono p-3">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="endDdi">Fim</label>
+                            <input type="text" id="split-end" placeholder="+551140001099"
+                                class="input-box w-full font-mono p-3">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="chunkSize">Tamanho do
+                                Bloco</label>
+                            <input type="number" id="split-chunk" value="10" class="input-box w-full font-mono p-3">
+                        </div>
+                        <div class="pt-4 space-y-3">
+                            <button onclick="generateData('split')" class="btn-primary w-full py-3 font-bold"
+                                data-i18n="btnSplit">Dividir Range</button>
+                            <button onclick="generateData('full')" class="btn-secondary w-full py-3 font-bold"
+                                data-i18n="btnFull">Gerar Lista Completa</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel p-6 flex flex-col lg:col-span-2">
+                    <div class="retro-titlebar -mx-6 -mt-6 mb-6 w-[calc(100%+3rem)]"><span>Output.txt</span>
+                        <div class="retro-titlebar-btn">^</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-lg flex items-center gap-2"><i data-lucide="check-circle-2"
+                                class="text-[var(--accent-green)]"></i> <span data-i18n="splitRes">2. Resultado</span>
+                        </h3>
+                        <button onclick="exportCsv()" class="btn-success py-2 px-4 font-bold flex items-center gap-2">
+                            <i data-lucide="download" class="w-4 h-4"></i> CSV
+                        </button>
+                    </div>
+                    <textarea id="split-output" readonly
+                        class="input-box flex-1 w-full font-mono text-sm p-4 resize-none whitespace-pre"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: CAPACITY ================= -->
+        <div id="view-capacity" class="view-section h-full mt-8">
+            <h2 class="text-3xl font-bold mb-8" data-i18n="capTitle">Capacidade (CAC)</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1">
+
+                <div class="panel p-6 h-fit">
+                    <div class="retro-titlebar -mx-6 -mt-6 mb-6 w-[calc(100%+3rem)]"><span>Calc_Params</span>
+                        <div class="retro-titlebar-btn">-</div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-6 flex items-center gap-2"><i data-lucide="calculator"
+                            class="text-[var(--accent-slate)]"></i> <span data-i18n="capParam">1. Parâmetros</span></h3>
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="calcMethod">Método de
+                                Cálculo</label>
+                            <div class="flex gap-2">
+                                <button onclick="setCalcMethod('Std')" id="btn-meth-std"
+                                    class="btn-primary flex-1 py-2 font-bold" data-i18n="calcStd">Standard UC</button>
+                                <button onclick="setCalcMethod('Erl')" id="btn-meth-erl"
+                                    class="btn-secondary flex-1 py-2 font-bold" data-i18n="calcErlang">Erlang B</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="users">Usuários</label>
+                            <input type="number" id="cap-users" value="100" class="input-box w-full font-mono p-3">
+                        </div>
+
+                        <div id="erlang-fields" class="hidden grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold mb-2 opacity-70" data-i18n="bhca">BHCA</label>
+                                <input type="number" id="cap-bhca" value="3.0" class="input-box w-full font-mono p-2">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-2 opacity-70" data-i18n="dur">Dur. (s)</label>
+                                <input type="number" id="cap-dur" value="120" class="input-box w-full font-mono p-2">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-2 opacity-70" data-i18n="gos">GoS</label>
+                                <input type="number" step="0.01" id="cap-gos" value="0.01"
+                                    class="input-box w-full font-mono p-2">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="codec">Codec</label>
+                            <select id="cap-codec" class="input-box w-full font-mono p-3">
+                                <option value="711" data-i18n="optG711">G.711 (87.2 kbps)</option>
+                                <option value="729" data-i18n="optG729">G.729 (31.2 kbps)</option>
+                                <option value="Opus" data-i18n="optOpus">Opus (50.0 kbps)</option>
+                            </select>
+                        </div>
+                        <button onclick="calculateCap()" class="btn-success w-full py-4 mt-4 font-bold text-lg"
+                            data-i18n="btnCalc">Calcular</button>
+                    </div>
+                </div>
+
+                <div
+                    class="panel p-8 flex flex-col justify-center items-center text-center border-t-8 border-[var(--accent-blue)]">
+                    <div class="retro-titlebar -mx-8 -mt-8 mb-6 w-[calc(100%+4rem)]"><span>Results.dat</span>
+                        <div class="retro-titlebar-btn">X</div>
+                    </div>
+                    <h3 class="font-bold text-xl mb-12 flex items-center gap-2"><i data-lucide="check-circle-2"
+                            class="text-[var(--accent-blue)]"></i> <span data-i18n="capRes">2. Dimensionamento</span>
+                    </h3>
+
+                    <div class="mb-12 w-full">
+                        <p class="text-sm font-bold uppercase tracking-wider mb-4 opacity-70" data-i18n="sipChans">
+                            Canais SIP Recomendados</p>
+                        <p id="res-cap-channels" class="text-7xl font-extrabold text-[var(--accent-blue)] font-mono">-
+                        </p>
+                    </div>
+                    <div class="mb-12 w-full">
+                        <p class="text-sm font-bold uppercase tracking-wider mb-4 opacity-70" data-i18n="bwEst">Banda
+                            Estimada</p>
+                        <p id="res-cap-bw" class="text-4xl font-extrabold text-[var(--accent-green)] font-mono">-</p>
+                    </div>
+                    <div class="w-full input-box p-4 text-left text-sm font-mono whitespace-pre-wrap">
+                        <span class="font-bold text-[var(--accent-blue)] font-ui uppercase"
+                            data-i18n="calcDetails">Detalhes do Cálculo:</span><br><br>
+                        <span id="res-cap-details" data-i18n="capMsg">Preencha os dados e clique em Calcular.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: DIALPLAN ================= -->
+        <div id="view-dialplan" class="view-section h-full mt-8">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold" data-i18n="dpTitle">Global Dial Plan</h2>
+                <div class="flex items-center gap-3">
+                    <label class="font-bold opacity-70" data-i18n="dpSelCountry">Selecione o País:</label>
+                    <select id="dp-country" onchange="renderDialplan()" class="input-box p-2 font-mono">
+                        <option value="br">Brazil (+55)</option>
+                        <option value="uk">United Kingdom (+44)</option>
+                        <option value="co">Colombia (+57)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-8 pb-8">
+                <div class="panel p-6">
+                    <div class="retro-titlebar -mx-6 -mt-6 mb-6 w-[calc(100%+3rem)]"><span>Outbound_Routes</span>
+                        <div class="retro-titlebar-btn">^</div>
+                    </div>
+                    <h3 class="text-xl font-bold text-[var(--accent-blue)] mb-6 flex items-center gap-2"><i
+                            data-lucide="globe" class="w-5 h-5"></i> <span data-i18n="dpOutbound">Plano de Saída</span>
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-[var(--border-color)]">
+                                    <th class="py-3 px-4 font-bold" data-i18n="dpDigitMap">Mapa de Dígitos</th>
+                                    <th class="py-3 px-4 font-bold" data-i18n="dpCallType">Tipo de Chamada</th>
+                                    <th class="py-3 px-4 font-bold" data-i18n="dpDesc">Descrição</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dp-outbound-body">
+                                <!-- Gerado via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel p-6 border-l-8 border-[var(--accent-green)]">
+                    <div class="retro-titlebar -mx-6 -mt-6 mb-6 w-[calc(100%+3rem)]"><span>TollFree_Routes</span>
+                        <div class="retro-titlebar-btn">^</div>
+                    </div>
+                    <h3 class="text-xl font-bold text-[var(--accent-green)] mb-6" data-i18n="dpTollFree">Toll-Free e Não
+                        Geográficos</h3>
+                    <div id="dp-tollfree-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Gerado via JS -->
+                    </div>
+                </div>
+
+                <div class="panel p-6 border-l-8 border-red-500">
+                    <div class="retro-titlebar -mx-6 -mt-6 mb-6 w-[calc(100%+3rem)]" style="background-color: #800000;">
+                        <span>Emergency_Routes</span>
+                        <div class="retro-titlebar-btn">!</div>
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-red-500 mb-1" data-i18n="dpEmerg">Números de Emergência</h3>
+                        <p class="text-sm opacity-60" data-i18n="dpEmergDesc">Não atribua emergência em ramais.</p>
+                    </div>
+                    <div id="dp-emergency-grid" class="flex flex-wrap gap-4">
+                        <!-- Gerado via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: TIMEZONE MATCHER ================= -->
+        <div id="view-timezone" class="view-section h-full mt-8">
+            <h2 class="text-3xl font-bold mb-8" data-i18n="tzTitle">Match de Fuso Horário</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1 pb-8">
+
+                <div class="panel p-6 h-fit">
+                    <div class="retro-titlebar -mx-6 -mt-6 mb-6 w-[calc(100%+3rem)]"><span>TZ_Config.sys</span>
+                        <div class="retro-titlebar-btn">-</div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-6 flex items-center gap-2"><i data-lucide="clock"
+                            class="text-[var(--accent-slate)]"></i> <span data-i18n="tzParams">1. Parâmetros</span></h3>
+                    <p class="text-sm opacity-70 mb-4" data-i18n="tzDesc">Busca horários em comum entre 09:00 e 18:00
+                        para todas as regiões.</p>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="tzDate">Data da
+                                Reunião</label>
+                            <input type="date" id="tz-date" class="input-box w-full font-mono p-3">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="tzMyTz">Meu Fuso
+                                Horário</label>
+                            <select id="tz-mine" class="input-box w-full font-mono p-3">
+                                <!-- Preenchido via JS -->
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="tzCoworker">Fusos dos
+                                Colegas (Selecione)</label>
+                            <div id="tz-coworkers-list"
+                                class="input-box p-3 max-h-40 overflow-y-auto space-y-2 text-sm font-mono">
+                                <!-- Preenchido via JS -->
+                            </div>
+                        </div>
+
+                        <button onclick="findCommonTimes()"
+                            class="btn-primary w-full py-4 mt-2 font-bold text-lg flex justify-center items-center gap-2">
+                            <i data-lucide="search" class="w-5 h-5"></i> <span data-i18n="tzFind">Buscar Horários</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel flex flex-col border-t-8 border-[var(--accent-green)] h-fit min-h-[400px]">
+                    <div class="retro-titlebar mb-0 w-full" style="background-color: var(--accent-green);">
+                        <span>Match_Results</span>
+                        <div class="retro-titlebar-btn">X</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-6 flex items-center gap-2"><i data-lucide="check-circle-2"
+                                class="text-[var(--accent-green)]"></i> <span data-i18n="tzRes">2. Horários
+                                Compatíveis</span></h3>
+                        <div id="tz-results" class="space-y-3">
+                            <p class="opacity-60 italic" data-i18n="tzWaiting">Selecione os dados e clique em buscar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: AUDIO CONVERTER ================= -->
+        <div id="view-audio" class="view-section h-full mt-8">
+            <h2 class="text-3xl font-bold mb-8" data-i18n="audioTitle">Conversor de Áudio URA (G.711)</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1 pb-8">
+
+                <div class="panel p-6 h-fit">
+                    <div class="retro-titlebar -mx-6 -mt-6 mb-6 w-[calc(100%+3rem)]"><span>Audio_Codec.exe</span>
+                        <div class="retro-titlebar-btn">-</div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-6 flex items-center gap-2"><i data-lucide="mic"
+                            class="text-[var(--accent-slate)]"></i> <span data-i18n="audioParams">Configurações de
+                            Conversão</span></h3>
+                    <p class="text-sm opacity-70 mb-4" data-i18n="audioDesc">Converta MP3/WAV/OGG para os formatos
+                        padrão de telefonia.</p>
+
+                    <div class="space-y-4">
+                        <div class="drop-zone p-8 flex flex-col items-center justify-center text-center"
+                            id="audio-dropzone" onclick="document.getElementById('audio-upload').click()">
+                            <i data-lucide="file-audio" class="w-10 h-10 mb-3 text-[var(--accent-blue)] opacity-80"></i>
+                            <span class="font-bold opacity-80" data-i18n="audioDrop">Clique ou arraste o arquivo de
+                                áudio aqui</span>
+                            <span class="text-xs mt-2 opacity-50 font-mono" id="audio-file-name">Nenhum arquivo
+                                selecionado</span>
+                            <input type="file" id="audio-upload" class="hidden" accept="audio/*">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="audioCodec">Modelo de
+                                Áudio (Codec / Perfil)</label>
+                            <select id="audio-codec" class="input-box w-full font-mono p-3">
+                                <optgroup label="Telefonia Clássica (8kHz)">
+                                    <option value="alaw_8000">WAV - G.711 A-law (Mono, 8-bit)</option>
+                                    <option value="ulaw_8000">WAV - G.711 µ-law (Mono, 8-bit)</option>
+                                    <option value="pcm16_8000">WAV - PCM Linear Padrão (Mono, 16-bit)</option>
+                                </optgroup>
+                                <optgroup label="Telefonia HD (Alta Definição)">
+                                    <option value="pcm16_16000">WAV - HD Voice PCM (16kHz, Mono, 16-bit)</option>
+                                    <option value="pcm16_44100">WAV - Qualidade Máxima PCM (44.1kHz, Mono, 16-bit)
+                                    </option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <button onclick="processAudio()" id="btn-convert-audio"
+                            class="btn-primary w-full py-4 mt-2 font-bold text-lg flex justify-center items-center gap-2">
+                            <i data-lucide="music" class="w-5 h-5"></i> <span data-i18n="audioBtn">Converter e
+                                Baixar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel flex flex-col border-t-8 border-[var(--accent-blue)] h-fit min-h-[300px]">
+                    <div class="retro-titlebar mb-0 w-full" style="background-color: var(--accent-blue);">
+                        <span>Audio_Status</span>
+                        <div class="retro-titlebar-btn">X</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-6 flex items-center gap-2"><i data-lucide="check-circle-2"
+                                class="text-[var(--accent-blue)]"></i> <span data-i18n="audioRes">Status da
+                                Conversão</span></h3>
+                        <div id="audio-results"
+                            class="input-box p-4 text-sm font-mono whitespace-pre-wrap h-48 overflow-y-auto">
+                            > Aguardando arquivo de áudio...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: TEXT TO SPEECH (TTS) ================= -->
+        <div id="view-tts" class="view-section h-full mt-8">
+            <h2 class="text-3xl font-bold mb-8" data-i18n="ttsTitle">Gerador Text-to-Speech</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1 pb-8">
+
+                <div class="panel p-6 h-fit">
+                    <div class="retro-titlebar -mx-6 -mt-6 mb-6 w-[calc(100%+3rem)]"><span>TTS_Engine.dll</span>
+                        <div class="retro-titlebar-btn">-</div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-6 flex items-center gap-2"><i data-lucide="message-square"
+                            class="text-[var(--accent-slate)]"></i> <span data-i18n="ttsParams">Configurações de
+                            Voz</span></h3>
+
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="ttsVoice">Selecione a
+                                Voz</label>
+                            <select id="tts-voice" class="input-box w-full font-mono p-3">
+                                <option value="">Carregando vozes do sistema...</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-2 opacity-70"
+                                    data-i18n="ttsRate">Velocidade</label>
+                                <input type="range" id="tts-rate" min="0.5" max="2" value="1" step="0.1"
+                                    class="w-full accent-[var(--accent-blue)] cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="ttsPitch">Tom
+                                    (Pitch)</label>
+                                <input type="range" id="tts-pitch" min="0" max="2" value="1" step="0.1"
+                                    class="w-full accent-[var(--accent-blue)] cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel flex flex-col border-t-8 border-[var(--accent-blue)] h-fit min-h-[350px]">
+                    <div class="retro-titlebar mb-0 w-full" style="background-color: var(--accent-blue);">
+                        <span>Text_Input</span>
+                        <div class="retro-titlebar-btn">X</div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <label class="block text-sm font-bold mb-2 opacity-70" data-i18n="ttsText">Digite o texto a ser
+                            falado:</label>
+                        <textarea id="tts-text" class="input-box flex-1 w-full font-ui p-4 resize-none mb-6"
+                            placeholder="Olá! Este é um teste do motor de síntese de voz nativo do navegador..."></textarea>
+
+                        <div class="flex gap-4">
+                            <button onclick="speakText()"
+                                class="btn-primary flex-1 py-4 font-bold text-lg flex justify-center items-center gap-2">
+                                <i data-lucide="play" class="w-5 h-5"></i> <span data-i18n="ttsPlay">Falar</span>
+                            </button>
+                            <button onclick="stopSpeech()"
+                                class="btn-secondary flex-1 py-4 font-bold text-lg flex justify-center items-center gap-2">
+                                <i data-lucide="square" class="w-5 h-5"></i> <span data-i18n="ttsStop">Parar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: URA TEMPLATES ================= -->
+        <div id="view-ura-templates" class="view-section h-full mt-8">
+            <h2 class="text-3xl font-bold mb-8" data-i18n="uraTitle">Modelos de URA (Autoatendimento)</h2>
+
+            <div class="flex flex-wrap gap-4 mb-8">
+                <button onclick="loadUraTemplate('simple')" id="btn-ura-simple"
+                    class="btn-primary py-3 px-8 font-bold flex items-center gap-2 flex-1 justify-center">
+                    <i data-lucide="git-commit" class="w-5 h-5"></i> <span data-i18n="uraSimple">Simples</span>
+                </button>
+                <button onclick="loadUraTemplate('advanced')" id="btn-ura-advanced"
+                    class="btn-secondary py-3 px-8 font-bold flex items-center gap-2 flex-1 justify-center">
+                    <i data-lucide="git-branch" class="w-5 h-5"></i> <span data-i18n="uraAdv">Avançado</span>
+                </button>
+                <button onclick="loadUraTemplate('complex')" id="btn-ura-complex"
+                    class="btn-secondary py-3 px-8 font-bold flex items-center gap-2 flex-1 justify-center">
+                    <i data-lucide="git-pull-request" class="w-5 h-5"></i> <span data-i18n="uraComplex">Complexo</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1 pb-8">
+                <!-- Painel do Diagrama -->
+                <div class="panel flex flex-col border-t-8 border-[var(--accent-blue)] min-h-[400px]">
+                    <div class="retro-titlebar mb-0 w-full" style="background-color: var(--accent-blue);">
+                        <span>IVR_Flowchart.vsd</span>
+                        <div class="retro-titlebar-btn">X</div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h3 class="font-bold text-xl mb-4 flex items-center gap-2"><i data-lucide="map"
+                                class="text-[var(--accent-blue)]"></i> <span data-i18n="uraDiagram">Diagrama de
+                                Fluxo</span></h3>
+                        <div id="mermaid-container"
+                            class="flex-1 input-box rounded-xl flex items-center justify-center p-4 overflow-auto"
+                            style="background-color: var(--bg-base);">
+                            <!-- O SVG do Mermaid será injetado aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Painel do Script de Texto -->
+                <div class="panel flex flex-col border-t-8 border-[var(--accent-green)] min-h-[400px]">
+                    <div class="retro-titlebar mb-0 w-full" style="background-color: var(--accent-green);">
+                        <span>IVR_Scripts.txt</span>
+                        <div class="retro-titlebar-btn">X</div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h3 class="font-bold text-xl mb-4 flex items-center gap-2"><i data-lucide="file-text"
+                                class="text-[var(--accent-green)]"></i> <span data-i18n="uraScript">Script de Locução /
+                                TTS</span></h3>
+                        <textarea id="ura-script-text"
+                            class="input-box flex-1 w-full font-ui p-4 resize-none text-base leading-relaxed" readonly
+                            placeholder="Selecione um modelo acima..."></textarea>
+
+                        <div class="flex gap-4 mt-4">
+                            <button onclick="copyUraScript()"
+                                class="btn-success flex-1 py-4 font-bold text-lg flex justify-center items-center gap-2">
+                                <i data-lucide="copy" class="w-5 h-5"></i> <span data-i18n="uraCopy">Copiar
+                                    Script</span>
+                            </button>
+                            <button onclick="sendUraToTts()"
+                                class="btn-primary py-4 px-6 font-bold text-lg flex justify-center items-center gap-2"
+                                title="Ouvir no Gerador TTS">
+                                <i data-lucide="message-square" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIGNATURE -->
+        <div
+            class="fixed bottom-4 right-6 flex items-center gap-2 text-xs font-mono font-bold opacity-30 hover:opacity-100 transition-opacity z-50 pointer-events-none">
+            <span>Developed by voice professional to voice professionals.</span>
+            <i data-lucide="coffee" class="w-4 h-4 text-[var(--accent-blue)]"></i>
+        </div>
+
+    </main>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        // 1. DICIONÁRIO DE TRADUÇÕES
+        const LOCALES = {
+            'en-GB': {
+                home: 'Home', lookup: 'Search & Validator', splitter: 'Range Manager', capacity: 'Call Capacity', dialplan: 'Global Dial Plan', tzMenu: 'Timezone Match', audioMenu: 'IVR Audio Converter', ttsMenu: 'Text to Speech', uraMenu: 'IVR Templates',
+                homeTitle: 'Telecom Tools Suite', homeSub: 'Select an application from the sidebar to start.',
+                devBy: 'Developed in Vanilla JS', devDescPy: 'Native Web Version, Fast and Single-file.',
+                lookTitle: 'DDI Search & Validator', btnAnalyse: 'Analyse', btnClear: 'Clear',
+                errInvalid: 'Invalid or incomplete number.', errFormat: 'Format Error. Use international code (e.g. +44).',
+                resCountry: 'Country (DDI):', resLoc: 'Location:', resNational: 'National Format:', resType: 'Estimated Type:', resUri: 'SIP URI:',
+                splitTitle: 'DDI Range Manager', splitConf: '1. Range Settings', startDdi: 'Start DDI', endDdi: 'End DDI', chunkSize: 'Chunk Size',
+                btnSplit: 'Split Range', btnFull: 'Generate Full List', splitRes: '2. Result', btnExport: 'Export CSV',
+                errValid: 'Set valid numbers.', errGreater: 'End number must be >= start number.', errLarge: 'Lists > 50k may impact performance.',
+                errChunk: 'Chunk size must be a positive integer.',
+                capTitle: 'Call Capacity (CAC)', capParam: '1. Parameters', calcMethod: 'Calculation Method',
+                calcStd: 'Standard UC', calcErlang: 'Erlang B', users: 'Total Users / Licences', bhca: 'BHCA', dur: 'Avg Duration (s)', gos: 'GoS', codec: 'Codec Used',
+                btnCalc: 'Calculate', capRes: '2. Sizing Results', sipChans: 'Recommended SIP Channels', bwEst: 'Estimated Bandwidth', calcDetails: 'Calculation Details:', capMsg: 'Fill in the data and click Calculate.',
+                errUsers: 'Invalid number of users.', errErlang: 'Invalid Erlang B parameters.',
+                detMethStd: 'Method: Standard UC (1 Channel per 5 Licences)', detStdIdeal: 'Ideal for Webex Calling and Teams Phone.',
+                detMethErl: 'Method: Erlang B', detTraf: 'Traffic (Erlangs):', detGos: 'Grade of Service (GoS):',
+                detMult: '* Multiplier for local branch calls may require more LAN bandwidth.',
+                optG711: 'G.711 (87.2 kbps)', optG729: 'G.729 (31.2 kbps)', optOpus: 'Opus (50.0 kbps)',
+                dpTitle: 'Global Dial Plan', dpSelCountry: 'Select Country:', dpOutbound: 'Outbound Calling Plan', dpDigitMap: 'Digit Map', dpCallType: 'Call Type', dpDesc: 'Description', dpTollFree: 'Toll-Free & Non-geographic', dpEmerg: 'Emergency Numbers', dpNoEmerg: 'No emergency numbers.', dpEmergDesc: 'Emergency numbers cannot be assigned internally.',
+                tzTitle: 'Timezone Matcher', tzParams: '1. Parameters', tzDesc: 'Find overlap between 09:00 and 18:00 for all regions.', tzDate: 'Meeting Date', tzMyTz: 'My Timezone', tzCoworker: 'Coworkers Timezones', tzFind: 'Find Common Hours', tzRes: '2. Available Slots', tzWaiting: 'Select parameters and click search.', tzNoMatch: 'No common business hours (09:00 - 18:00) found.',
+                audioTitle: 'IVR Audio Converter (G.711)', audioParams: 'Conversion Settings', audioDesc: 'Convert MP3/WAV/OGG to standard telephony formats.', audioDrop: 'Click or drag the audio file here', audioCodec: 'Audio Model (Codec / Profile)', audioBtn: 'Convert & Download', audioRes: 'Conversion Status',
+                ttsTitle: 'Text-to-Speech Generator', ttsParams: 'Voice Settings', ttsVoice: 'Select Voice', ttsRate: 'Speed (Rate)', ttsPitch: 'Pitch', ttsText: 'Enter text to speak:', ttsPlay: 'Speak', ttsStop: 'Stop',
+                uraTitle: 'IVR Templates (Flows)', uraSimple: 'Simple', uraAdv: 'Advanced', uraComplex: 'Complex', uraDiagram: 'Flow Diagram', uraScript: 'Voice Prompt Script', uraCopy: 'Copy Script'
+            },
+            'pt-BR': {
+                home: 'Início', lookup: 'Busca e Validador', splitter: 'Gerenciador de Range', capacity: 'Capacidade (CAC)', dialplan: 'Global Dial Plan', tzMenu: 'Match de Fuso', audioMenu: 'Conversor URA', ttsMenu: 'Text to Speech', uraMenu: 'Modelos de URA',
+                homeTitle: 'Telecom Tools Suite', homeSub: 'Selecione uma das aplicações no menu lateral para iniciar.',
+                devBy: 'Desenvolvido em Vanilla JS', devDescPy: 'Versão Web Nativa, Rápida e em Arquivo Único.',
+                lookTitle: 'Busca e Validador de DDI', btnAnalyse: 'Analisar', btnClear: 'Limpar',
+                errInvalid: 'Número Inválido ou incompleto.', errFormat: 'Erro de Formato. Use o código internacional.',
+                resCountry: 'País (DDI):', resLoc: 'Localização:', resNational: 'Formato Nacional:', resType: 'Tipo Estimado:', resUri: 'SIP URI:',
+                splitTitle: 'Gerenciador de Range de DDI', splitConf: '1. Configurações', startDdi: 'Início (DDI)', endDdi: 'Fim (DDI)', chunkSize: 'Tamanho do Bloco',
+                btnSplit: 'Dividir Range', btnFull: 'Gerar Lista Completa', splitRes: '2. Resultado', btnExport: 'Exportar CSV',
+                errValid: 'Defina números válidos.', errGreater: 'O número final deve ser >= ao inicial.', errLarge: 'Listas > 50k podem afetar a aba.',
+                errChunk: 'Tamanho deve ser inteiro positivo.',
+                capTitle: 'Capacidade (CAC)', capParam: '1. Parâmetros', calcMethod: 'Método de Cálculo',
+                calcStd: 'Standard UC', calcErlang: 'Erlang B', users: 'Total de Usuários', bhca: 'BHCA', dur: 'Duração Média (s)', gos: 'GoS', codec: 'Codec',
+                btnCalc: 'Calcular', capRes: '2. Dimensionamento', sipChans: 'Canais SIP Recomendados', bwEst: 'Banda Estimada', calcDetails: 'Detalhes do Cálculo:', capMsg: 'Preencha os dados e clique em Calcular.',
+                errUsers: 'Número de usuários inválido.', errErlang: 'Parâmetros Erlang B inválidos.',
+                detMethStd: 'Método: Standard UC (1 Canal para 5 Licenças)', detStdIdeal: 'Ideal para Webex Calling e Teams Phone.',
+                detMethErl: 'Método: Erlang B', detTraf: 'Tráfego (Erlangs):', detGos: 'Grade de Serviço (GoS):',
+                detMult: '* Multiplicador local na filial pode exigir mais banda LAN.',
+                optG711: 'G.711 (87.2 kbps)', optG729: 'G.729 (31.2 kbps)', optOpus: 'Opus (50.0 kbps)',
+                dpTitle: 'Global Dial Plan', dpSelCountry: 'Selecione o País:', dpOutbound: 'Plano de Saída', dpDigitMap: 'Mapa de Dígitos', dpCallType: 'Tipo de Chamada', dpDesc: 'Descrição', dpTollFree: 'Toll-Free e Não Geográficos', dpEmerg: 'Números de Emergência', dpNoEmerg: 'Nenhum número.', dpEmergDesc: 'Não atribua emergência em ramais.',
+                tzTitle: 'Match de Fuso Horário', tzParams: '1. Parâmetros', tzDesc: 'Busca horários comerciais (09:00 - 18:00) em comum para todos.', tzDate: 'Data da Reunião', tzMyTz: 'Meu Fuso Horário', tzCoworker: 'Fusos dos Colegas (Selecione 1 ou mais)', tzFind: 'Buscar Horários', tzRes: '2. Horários Compatíveis', tzWaiting: 'Selecione os dados e clique em buscar.', tzNoMatch: 'Nenhum horário comercial em comum encontrado.',
+                audioTitle: 'Conversor de Áudio URA (G.711)', audioParams: 'Configurações de Conversão', audioDesc: 'Converta MP3/WAV/OGG para os formatos padrão de telefonia.', audioDrop: 'Clique ou arraste o arquivo de áudio aqui', audioCodec: 'Modelo de Áudio (Codec / Perfil)', audioBtn: 'Converter e Baixar', audioRes: 'Status da Conversão',
+                ttsTitle: 'Gerador Text-to-Speech', ttsParams: 'Configurações de Voz', ttsVoice: 'Selecione a Voz', ttsRate: 'Velocidade', ttsPitch: 'Tom (Pitch)', ttsText: 'Digite o texto a ser falado:', ttsPlay: 'Falar', ttsStop: 'Parar',
+                uraTitle: 'Modelos de URA (Autoatendimento)', uraSimple: 'Simples', uraAdv: 'Avançado', uraComplex: 'Complexo', uraDiagram: 'Diagrama de Fluxo', uraScript: 'Script de Locução / TTS', uraCopy: 'Copiar Script'
+            },
+            'es-CO': {
+                home: 'Inicio', lookup: 'Búsqueda y Validador', splitter: 'Gestor de Rangos', capacity: 'Capacidad (CAC)', dialplan: 'Plan de Marcación Global', tzMenu: 'Cruce Horario', audioMenu: 'Conversor IVR', ttsMenu: 'Text to Speech', uraMenu: 'Plantillas de IVR',
+                homeTitle: 'Telecom Tools Suite', homeSub: 'Seleccione una de las aplicaciones en el menú lateral para iniciar.',
+                devBy: 'Desarrollado en Vanilla JS', devDescPy: 'Versión Web Nativa, Rápida y Archivo Único.',
+                lookTitle: 'Búsqueda y Validador de DDI', btnAnalyse: 'Analizar', btnClear: 'Limpiar',
+                errInvalid: 'Número inválido o incompleto.', errFormat: 'Error de formato. Use el código (ej: +57).',
+                resCountry: 'País (DDI):', resLoc: 'Ubicación:', resNational: 'Formato Nacional:', resType: 'Tipo Estimado:', resUri: 'SIP URI:',
+                splitTitle: 'Gestor de Rangos de DDI', splitConf: '1. Configuraciones', startDdi: 'Inicio (DDI Inicial)', endDdi: 'Fin (DDI Final)', chunkSize: 'Tamaño del Bloque',
+                btnSplit: 'Dividir Rango', btnFull: 'Lista Completa', splitRes: '2. Resultado', btnExport: 'Exportar CSV',
+                errValid: 'Defina números válidos.', errGreater: 'El número final debe ser >= al inicial.', errLarge: 'Listas > 50k pueden afectar.',
+                errChunk: 'Tamaño de bloque debe ser entero.',
+                capTitle: 'Capacidad (CAC)', capParam: '1. Parámetros', calcMethod: 'Método',
+                calcStd: 'Standard UC', calcErlang: 'Erlang B', users: 'Total Usuarios', bhca: 'BHCA', dur: 'Duración Prom. (s)', gos: 'GoS', codec: 'Códec',
+                btnCalc: 'Calcular', capRes: '2. Dimensionamiento', sipChans: 'Canales SIP Recomendados', bwEst: 'Ancho de Banda', calcDetails: 'Detalles del Cálculo:', capMsg: 'Llene los datos y haga clic en Calcular.',
+                errUsers: 'Número de usuarios inválido.', errErlang: 'Parámetros Erlang B inválidos.',
+                detMethStd: 'Método: Standard UC (1 Canal por 5 Licencias)', detStdIdeal: 'Ideal para Webex Calling y Teams Phone.',
+                detMethErl: 'Método: Erlang B', detTraf: 'Tráfico (Erlangs):', detGos: 'Grado de Servicio (GoS):',
+                detMult: '* Un multiplicador en la sucursal puede requerir más banda LAN.',
+                optG711: 'G.711 (87.2 kbps)', optG729: 'G.729 (31.2 kbps)', optOpus: 'Opus (50.0 kbps)',
+                dpTitle: 'Global Dial Plan', dpSelCountry: 'Seleccionar País:', dpOutbound: 'Plan de Salida', dpDigitMap: 'Mapa de Dígitos', dpCallType: 'Tipo de Llamada', dpDesc: 'Descripción', dpTollFree: 'Toll-Free y No Geográficos', dpEmerg: 'Emergencia', dpNoEmerg: 'No hay números.', dpEmergDesc: 'No asigne emergencias a extensiones.',
+                tzTitle: 'Cruce de Zonas Horarias', tzParams: '1. Parámetros', tzDesc: 'Busca horarios entre las 09:00 y las 18:00 para todos.', tzDate: 'Fecha de Reunión', tzMyTz: 'Mi Zona Horaria', tzCoworker: 'Zonas Horarias de Compañeros', tzFind: 'Buscar Horarios', tzRes: '2. Horarios Compatibles', tzWaiting: 'Seleccione parámetros y haga clic en buscar.', tzNoMatch: 'No se encontraron horarios comerciales comunes.',
+                audioTitle: 'Conversor de Audio IVR (G.711)', audioParams: 'Configuración de Conversión', audioDesc: 'Convierta MP3/WAV/OGG a formatos de telefonía.', audioDrop: 'Haga clic o arrastre el archivo aquí', audioCodec: 'Modelo de Audio (Códec / Perfil)', audioBtn: 'Convertir y Descargar', audioRes: 'Estado de Conversión',
+                ttsTitle: 'Generador Text-to-Speech', ttsParams: 'Configuraciones de Voz', ttsVoice: 'Seleccionar Voz', ttsRate: 'Velocidad', ttsPitch: 'Tono (Pitch)', ttsText: 'Ingrese el texto a hablar:', ttsPlay: 'Hablar', ttsStop: 'Detener',
+                uraTitle: 'Plantillas de IVR (Flujos)', uraSimple: 'Simple', uraAdv: 'Avanzado', uraComplex: 'Complejo', uraDiagram: 'Diagrama de Flujo', uraScript: 'Script de Audio', uraCopy: 'Copiar Script'
+            }
+        };
+
+        const MOCK_DIALPLAN = {
+            'br': { name: 'Brazil', code: '55', outbound: [{ map: '0[1-9][1-9][2-5]XXXXXXX', type: 'National Fixed', desc: 'Long distance fixed' }, { map: '0[1-9][1-9]9XXXXXXXX', type: 'National Mobile', desc: 'Long distance mobile' }, { map: '00XX[1-9].', type: 'International', desc: 'International calls' }, { map: '0800XXXXXXX', type: 'Toll Free', desc: 'Free phone' }, { map: '0300XXXXXXX', type: 'Premium', desc: 'Shared cost' }, { map: '400X[0-9]{4}', type: 'National Fixed', desc: 'Capitals & Metro areas' }], emergency: ['190', '192', '193', '188'] },
+            'uk': { name: 'United Kingdom', code: '44', outbound: [{ map: '01XXXXXXXXX', type: 'National Fixed', desc: 'Geographic numbers' }, { map: '07XXXXXXXXX', type: 'National Mobile', desc: 'Mobile numbers' }, { map: '00[1-9].', type: 'International', desc: 'International calls' }, { map: '0800XXXXXX', type: 'Toll Free', desc: 'Free phone' }, { map: '09XXXXXXXXX', type: 'Premium', desc: 'Premium rate' }], emergency: ['999', '112'] },
+            'co': { name: 'Colombia', code: '57', outbound: [{ map: '60[1-8][2-9]XXXXXX', type: 'National Fixed', desc: 'National fixed line' }, { map: '3XXXXXXXXX', type: 'National Mobile', desc: 'Mobile numbers' }, { map: '00X[1-9].', type: 'International', desc: 'International via carrier' }, { map: '018000XXXXX', type: 'Toll Free', desc: 'Free phone' }, { map: '01900XXXXXX', type: 'Premium', desc: 'Premium rate' }], emergency: ['123', '119'] }
+        };
+
+        const TIMEZONES = [
+            { id: 'America/Sao_Paulo', label: 'Brasil (São Paulo)' },
+            { id: 'America/Bogota', label: 'Colômbia (Bogotá)' },
+            { id: 'America/Mexico_City', label: 'México (CDMX)' },
+            { id: 'America/New_York', label: 'EUA (New York / EST)' },
+            { id: 'America/Los_Angeles', label: 'EUA (Los Angeles / PST)' },
+            { id: 'Europe/London', label: 'Reino Unido (London)' },
+            { id: 'Europe/Lisbon', label: 'Portugal (Lisboa)' },
+            { id: 'Europe/Madrid', label: 'Espanha (Madrid)' },
+            { id: 'Asia/Kolkata', label: 'Índia (Kolkata)' },
+            { id: 'Asia/Tokyo', label: 'Japão (Tokyo)' },
+            { id: 'Australia/Sydney', label: 'Austrália (Sydney)' }
+        ];
+
+        // ESTADO GLOBAL
+        let currentLang = 'pt-BR';
+        let currentTheme = 'light';
+        let calcMethod = 'Std';
+
+        // 2. INICIALIZAÇÃO
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+            setLang(currentLang);
+            renderDialplan();
+            populateTimezones();
+            setupAudioDropzone();
+
+            // Set default TZ date
+            document.getElementById('tz-date').value = new Date().toISOString().split('T')[0];
+
+            // Inicializar vozes do TTS
+            populateVoices();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = populateVoices;
+            }
+        });
+
+        // 3. NAVEGAÇÃO ENTRE TELAS
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById('view-' + viewId).classList.add('active');
+
+            document.querySelectorAll('#nav-menu .nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+        // 4. MUDANÇA DE TEMA (LIGHT -> DARK -> BT -> MATRIX -> ARSENAL -> RETRO)
+        function cycleTheme() {
+            const themes = ['light', 'dark', 'bt', 'matrix', 'arsenal', 'retro'];
+            let idx = themes.indexOf(currentTheme);
+            currentTheme = themes[(idx + 1) % themes.length];
+
+            document.documentElement.setAttribute('data-theme', currentTheme);
+
+            const labels = {
+                'light': 'Tema: Light',
+                'dark': 'Tema: Dark',
+                'bt': 'Tema: British Telecom',
+                'matrix': 'Tema: Matrix',
+                'arsenal': 'Tema: Arsenal FC',
+                'retro': 'Modo: Old school'
+            };
+
+            const themeLabel = document.getElementById('theme-label');
+            if (themeLabel) themeLabel.innerText = labels[currentTheme];
+
+            // Re-render to update dynamic badges in Dialplan
+            renderDialplan();
+            // Re-render Mermaid to match theme
+            const uraView = document.getElementById('view-ura-templates');
+            if (uraView && uraView.classList.contains('active')) {
+                loadUraTemplate(currentUraTemplate);
+            }
+        }
+
+        // 5. MUDANÇA DE IDIOMA
+        function setLang(langCode) {
+            currentLang = langCode;
+            const dict = LOCALES[langCode];
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+
+            // Update Lang Buttons UI
+            ['en-GB', 'pt-BR', 'es-CO'].forEach(l => {
+                const btn = document.getElementById('lang-' + l);
+                if (btn) {
+                    if (l === langCode) {
+                        btn.classList.replace('opacity-60', 'opacity-100');
+                        btn.classList.add('border-b-2', 'border-[var(--accent-blue)]');
+                    } else {
+                        btn.classList.replace('opacity-100', 'opacity-60');
+                        btn.classList.remove('border-b-2', 'border-[var(--accent-blue)]');
+                    }
+                }
+            });
+
+            renderDialplan(); // Re-render table headers/desc if needed
+            const uraView = document.getElementById('view-ura-templates');
+            if (uraView && uraView.classList.contains('active')) {
+                loadUraTemplate(currentUraTemplate);
+            }
+        }
+
+        // 6. LÓGICA: LOOKUP
+        function analyzeNumber() {
+            const input = document.getElementById('lookup-input').value;
+            const errBox = document.getElementById('lookup-error');
+            const resBox = document.getElementById('lookup-result');
+            const t = LOCALES[currentLang];
+
+            errBox.classList.add('hidden');
+            resBox.classList.add('hidden');
+
+            if (!window.libphonenumber) {
+                showError("Library still loading...");
+                return;
+            }
+
+            const formatted = input.startsWith('+') ? input : '+' + input.replace(/\D/g, '');
+
+            try {
+                const parsed = window.libphonenumber.parsePhoneNumber(formatted);
+                if (parsed && parsed.isValid()) {
+                    document.getElementById('res-e164').innerText = parsed.format('E.164');
+                    document.getElementById('res-national').innerText = parsed.formatNational();
+                    document.getElementById('res-uri').innerText = parsed.getURI();
+                    document.getElementById('res-country').innerText = parsed.country || 'N/A';
+                    document.getElementById('res-type').innerText = parsed.getType() || 'UNKNOWN';
+
+                    resBox.classList.remove('hidden');
+                } else {
+                    showError(t.errInvalid);
+                }
+            } catch (err) {
+                showError(t.errFormat);
+            }
+        }
+
+        function showError(msg) {
+            document.getElementById('lookup-error-msg').innerText = msg;
+            document.getElementById('lookup-error').classList.remove('hidden');
+        }
+
+        function clearLookup() {
+            document.getElementById('lookup-input').value = '';
+            document.getElementById('lookup-error').classList.add('hidden');
+            document.getElementById('lookup-result').classList.add('hidden');
+        }
+
+        // 7. LÓGICA: SPLITTER
+        function generateData(mode) {
+            const startStr = document.getElementById('split-start').value;
+            const endStr = document.getElementById('split-end').value;
+            const chunkStr = document.getElementById('split-chunk').value;
+            const output = document.getElementById('split-output');
+            const t = LOCALES[currentLang];
+
+            const cleanStart = startStr.replace(/\D/g, '');
+            const cleanEnd = endStr.replace(/\D/g, '');
+            const prefix = startStr.startsWith('+') ? '+' : '';
+            const length = cleanStart.length;
+
+            if (!cleanStart || !cleanEnd) return alert(t.errValid);
+
+            const vStart = parseInt(cleanStart, 10);
+            const vEnd = parseInt(cleanEnd, 10);
+
+            if (vStart > vEnd) return alert(t.errGreater);
+
+            let res = "";
+            if (mode === 'split') {
+                const cSize = parseInt(chunkStr, 10);
+                if (isNaN(cSize) || cSize < 1) return alert(t.errChunk);
+
+                res = `Start DDI\tEnd DDI\tSize\n`;
+                let current = vStart;
+                while (current <= vEnd) {
+                    let blockEnd = Math.min(current + cSize - 1, vEnd);
+                    let sFmt = prefix + String(current).padStart(length, '0');
+                    let eFmt = prefix + String(blockEnd).padStart(length, '0');
+                    res += `${sFmt}\t${eFmt}\t${blockEnd - current + 1}\n`;
+                    current = blockEnd + 1;
+                }
+            } else {
+                if (vEnd - vStart > 50000) return alert(t.errLarge);
+                res = `DDI Number\n`;
+                for (let i = vStart; i <= vEnd; i++) {
+                    res += `${prefix}${String(i).padStart(length, '0')}\n`;
+                }
+            }
+            output.value = res;
+        }
+
+        function exportCsv() {
+            const output = document.getElementById('split-output').value;
+            if (!output) return;
+            // Adiciona BOM para UTF-8 no Excel e converte tabs em ponto e vírgula
+            const blob = new Blob(["\uFEFF" + output.replace(/\t/g, ';')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "ddi_ranges.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 8. LÓGICA: CAPACITY
+        function setCalcMethod(method) {
+            calcMethod = method;
+            const btnStd = document.getElementById('btn-meth-std');
+            const btnErl = document.getElementById('btn-meth-erl');
+            const erlFields = document.getElementById('erlang-fields');
+
+            if (method === 'Std') {
+                btnStd.className = 'btn-primary flex-1 py-2 font-bold';
+                btnErl.className = 'btn-secondary flex-1 py-2 font-bold';
+                erlFields.classList.add('hidden');
+                erlFields.classList.remove('grid');
+            } else {
+                btnErl.className = 'btn-primary flex-1 py-2 font-bold';
+                btnStd.className = 'btn-secondary flex-1 py-2 font-bold';
+                erlFields.classList.remove('hidden');
+                erlFields.classList.add('grid');
+            }
+        }
+
+        function calculateCap() {
+            const users = parseInt(document.getElementById('cap-users').value);
+            const t = LOCALES[currentLang];
+
+            if (isNaN(users) || users < 0) return alert(t.errUsers);
+
+            let channels = 1;
+            let desc = [];
+
+            if (calcMethod === 'Std') {
+                channels = Math.ceil(users / 5);
+                desc.push(t.detMethStd, t.detStdIdeal);
+            } else {
+                const vBhca = parseFloat(document.getElementById('cap-bhca').value);
+                const vDur = parseFloat(document.getElementById('cap-dur').value);
+                const vGos = parseFloat(document.getElementById('cap-gos').value);
+
+                if ([vBhca, vDur, vGos].some(isNaN) || [vBhca, vDur, vGos].some(v => v < 0)) return alert(t.errErlang);
+
+                const totalCalls = users * vBhca;
+                const erlangs = (totalCalls * vDur) / 3600;
+
+                // Formula Erlang B
+                let p = 1.0;
+                while (channels <= 10000) {
+                    p = (erlangs * p) / (channels + erlangs * p);
+                    if (p <= vGos) break;
+                    channels++;
+                }
+                desc.push(t.detMethErl, `${t.detTraf} ${erlangs.toFixed(2)}`, `${t.detGos} ${(vGos * 100).toFixed(1)}%`);
+            }
+
+            const codec = document.getElementById('cap-codec').value;
+            const bwMap = { '711': 87.2, '729': 31.2, 'Opus': 50.0 };
+            const totalBw = channels * (bwMap[codec] || 50);
+            const bwStr = totalBw > 1000 ? `${(totalBw / 1000).toFixed(2)} Mbps` : `${totalBw.toFixed(2)} kbps`;
+
+            document.getElementById('res-cap-channels').innerText = channels;
+            document.getElementById('res-cap-bw').innerText = bwStr;
+
+            desc.push(`\n${t.detMult}`);
+            document.getElementById('res-cap-details').innerText = desc.join('\n');
+        }
+
+        // 9. LÓGICA: DIALPLAN
+        function renderDialplan() {
+            const countrySelect = document.getElementById('dp-country');
+            if (!countrySelect) return; // Previne erro se o elemento ainda não estiver no DOM
+
+            const country = countrySelect.value;
+            const data = MOCK_DIALPLAN[country];
+            if (!data) return;
+
+            // Outbound
+            const outBody = document.getElementById('dp-outbound-body');
+            if (outBody) {
+                outBody.innerHTML = '';
+                data.outbound.filter(o => o.type !== 'Toll Free').forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'border-b border-[var(--border-color)] transition-colors hover:bg-black/5';
+
+                    let badgeClass = row.type.includes('Premium') ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700';
+                    if (currentTheme === 'retro') badgeClass = 'bg-[#c0c0c0] border border-black font-bold text-black';
+                    if (currentTheme === 'matrix') badgeClass = 'border border-[#00FF41] bg-black text-[#00FF41]';
+                    if (currentTheme === 'arsenal') badgeClass = row.type.includes('Premium') ? 'bg-[#9C824A] text-[#021a36] border border-[#9C824A]' : 'bg-[#EF0107] text-white border border-[#EF0107]';
+
+                    tr.innerHTML = `
+                        <td class="py-4 px-4 font-mono font-bold">${row.map}</td>
+                        <td class="py-4 px-4"><span class="px-3 py-1 rounded-full text-xs font-bold ${badgeClass}">${row.type}</span></td>
+                        <td class="py-4 px-4 opacity-70">${row.desc}</td>
+                    `;
+                    outBody.appendChild(tr);
+                });
+            }
+
+            // Toll Free
+            const tollGrid = document.getElementById('dp-tollfree-grid');
+            if (tollGrid) {
+                tollGrid.innerHTML = '';
+                const tollData = data.outbound.filter(o => o.type === 'Toll Free');
+                if (tollData.length === 0) {
+                    tollGrid.innerHTML = '<p class="opacity-50 italic">N/A</p>';
+                } else {
+                    tollData.forEach(row => {
+                        let retroStyle = currentTheme === 'retro' ? 'border: 2px solid black; background: #ffffff; color: black;' : '';
+                        let badgeClass = currentTheme === 'retro' ? 'border border-black bg-[#c0c0c0] text-black' : 'bg-green-100 text-green-700';
+                        if (currentTheme === 'matrix') badgeClass = 'border border-[#00FF41] bg-[rgba(0,255,65,0.2)] text-[#00FF41]';
+                        if (currentTheme === 'arsenal') badgeClass = 'bg-[#9C824A] text-[#021a36] border border-[#9C824A]';
+
+                        tollGrid.innerHTML += `
+                            <div class="p-4 flex justify-between items-center input-box" style="${retroStyle}">
+                                <div>
+                                    <p class="font-mono font-bold text-lg">${row.map}</p>
+                                    <p class="text-xs uppercase opacity-60 font-bold mt-1">${row.desc}</p>
+                                </div>
+                                <span class="${badgeClass} px-3 py-1 rounded-full text-xs font-bold shadow-sm">${row.type}</span>
+                            </div>
+                        `;
+                    });
+                }
+            }
+
+            // Emergency
+            const emergGrid = document.getElementById('dp-emergency-grid');
+            if (emergGrid) {
+                emergGrid.innerHTML = '';
+                data.emergency.forEach(em => {
+                    let retroStyle = currentTheme === 'retro' ? 'border: 2px solid black; background: #c0c0c0;' : '';
+                    if (currentTheme === 'matrix') retroStyle = 'border: 1px solid #00FF41; background: transparent; color: #00FF41; box-shadow: 0 0 10px rgba(0,255,65,0.2);';
+                    if (currentTheme === 'arsenal') retroStyle = 'border: 2px solid #9C824A; background: #063672; color: #EF0107;';
+
+                    emergGrid.innerHTML += `
+                        <div class="bg-red-100 border border-red-200 p-4 flex flex-col items-center justify-center min-w-[120px]" style="border-radius: var(--radius-sm); ${retroStyle}">
+                            <span class="text-3xl font-extrabold font-mono text-red-600 mb-1" style="${currentTheme === 'matrix' ? 'color: #00FF41; text-shadow: 0 0 5px #00FF41;' : ''}${currentTheme === 'arsenal' ? 'color: #EF0107;' : ''}">${em}</span>
+                            <span class="text-xs font-bold text-red-500 uppercase" style="${currentTheme === 'matrix' ? 'color: #00FF41;' : ''}${currentTheme === 'arsenal' ? 'color: #9C824A;' : ''}">SOS</span>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        // 10. LÓGICA: TIMEZONE MATCHER
+        function populateTimezones() {
+            const tzMine = document.getElementById('tz-mine');
+            const tzCoworkers = document.getElementById('tz-coworkers-list');
+
+            if (!tzMine || !tzCoworkers) return; // Previne erro caso os elementos não existam
+
+            TIMEZONES.forEach((tz, index) => {
+                const opt = document.createElement('option');
+                opt.value = tz.id;
+                opt.text = tz.label;
+                if (tz.id === 'America/Sao_Paulo') opt.selected = true;
+                tzMine.appendChild(opt);
+
+                const cbDiv = document.createElement('div');
+                cbDiv.className = "flex items-center gap-2";
+                cbDiv.innerHTML = `
+                    <input type="checkbox" id="tz-cb-${index}" value="${tz.id}" class="tz-coworker-cb w-4 h-4 cursor-pointer accent-[var(--accent-blue)]">
+                    <label for="tz-cb-${index}" class="cursor-pointer opacity-80">${tz.label}</label>
+                `;
+                tzCoworkers.appendChild(cbDiv);
+            });
+        }
+
+        function findCommonTimes() {
+            const dateVal = document.getElementById('tz-date').value;
+            const myTz = document.getElementById('tz-mine').value;
+            const coworkerCbs = document.querySelectorAll('.tz-coworker-cb:checked');
+            const coworkerTzs = Array.from(coworkerCbs).map(cb => cb.value);
+            const resultsBox = document.getElementById('tz-results');
+            const t = LOCALES[currentLang];
+
+            if (!dateVal || coworkerTzs.length === 0) {
+                resultsBox.innerHTML = `<p class="text-red-500 font-bold"><i data-lucide="alert-circle" class="inline w-4 h-4"></i> Por favor, selecione a data e pelo menos 1 fuso de colega.</p>`;
+                lucide.createIcons();
+                return;
+            }
+
+            const allTzs = [myTz, ...coworkerTzs];
+            const [year, month, day] = dateVal.split('-').map(Number);
+            let viableSlots = [];
+
+            let startTimestamp = Date.UTC(year, month - 1, day, 0, 0, 0) - (24 * 3600 * 1000);
+
+            for (let i = 0; i < 72; i++) {
+                let testDate = new Date(startTimestamp + (i * 3600 * 1000));
+
+                let dateParts = new Intl.DateTimeFormat('en-US', { timeZone: myTz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(testDate);
+                let y = dateParts.find(p => p.type === 'year').value;
+                let m = dateParts.find(p => p.type === 'month').value;
+                let d = dateParts.find(p => p.type === 'day').value;
+                let myTzDateStr = `${y}-${m}-${d}`;
+
+                if (myTzDateStr !== dateVal) continue;
+
+                let isViable = true;
+                let slotDetails = [];
+
+                for (let tz of allTzs) {
+                    let hourStr = new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: 'numeric', hourCycle: 'h23' }).format(testDate);
+                    let tzAbbr = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'short' }).formatToParts(testDate).find(p => p.type === 'timeZoneName').value;
+                    let hour = parseInt(hourStr, 10);
+
+                    if (hour < 9 || hour >= 18) {
+                        isViable = false;
+                        break;
+                    }
+
+                    slotDetails.push({
+                        tzId: tz,
+                        str: `${hour.toString().padStart(2, '0')}:00 (${tzAbbr})`
+                    });
+                }
+
+                if (isViable) viableSlots.push(slotDetails);
+            }
+
+            resultsBox.innerHTML = '';
+            if (viableSlots.length === 0) {
+                resultsBox.innerHTML = `<p class="opacity-60 italic font-bold text-red-500">${t.tzNoMatch}</p>`;
+                return;
+            }
+
+            viableSlots.forEach(slot => {
+                let myTime = slot.find(s => s.tzId === myTz).str;
+                let othersTime = slot.filter(s => s.tzId !== myTz).map(s => s.str).join(', ');
+
+                let retroStyle = currentTheme === 'retro' ? 'border: 2px solid black; background: #ffffff; color: black;' : '';
+
+                resultsBox.innerHTML += `
+                    <div class="p-4 mb-2 input-box shadow-sm" style="${retroStyle}">
+                        <div class="font-extrabold text-lg text-[var(--accent-blue)]">${myTime}</div>
+                        <div class="text-sm opacity-80 mt-1 font-mono">Colegas: <span class="font-bold">${othersTime}</span></div>
+                    </div>
+                `;
+            });
+        }
+
+        // 11. LÓGICA: AUDIO CONVERTER (NATIVO JS)
+        function setupAudioDropzone() {
+            const dropZone = document.getElementById('audio-dropzone');
+            const fileInput = document.getElementById('audio-upload');
+            const fileName = document.getElementById('audio-file-name');
+
+            if (!dropZone || !fileInput || !fileName) return;
+
+            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault(); dropZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length) { fileInput.files = e.dataTransfer.files; updateFileName(); }
+            });
+            fileInput.addEventListener('change', updateFileName);
+
+            function updateFileName() {
+                if (fileInput.files.length) fileName.innerText = fileInput.files[0].name;
+                else fileName.innerText = "Nenhum arquivo selecionado";
+            }
+        }
+
+        function logAudioStatus(msg, isError = false) {
+            const res = document.getElementById('audio-results');
+            const color = isError ? 'text-red-500' : 'text-[var(--accent-blue)]';
+            res.innerHTML += `<br><span class="${color}">> ${msg}</span>`;
+            res.scrollTop = res.scrollHeight;
+        }
+
+        // G.711 A-law Encoder Algorithm
+        function linearToALaw(pcm_val) {
+            let mask;
+            let seg;
+            let pcm_val_abs = pcm_val >= 0 ? pcm_val : -pcm_val;
+            if (pcm_val_abs > 32767) pcm_val_abs = 32767;
+            let aval;
+            if (pcm_val >= 0) { mask = 0xD5; } else { mask = 0x55; pcm_val_abs = pcm_val_abs - 8; if (pcm_val_abs < 0) pcm_val_abs = 0; }
+            if (pcm_val_abs >= 256) {
+                let shift_val = pcm_val_abs >> 8;
+                seg = 1;
+                while (shift_val > 0) { seg++; shift_val >>= 1; }
+                aval = (seg << 4) | ((pcm_val_abs >> (seg + 3)) & 0x0F);
+            } else {
+                aval = (pcm_val_abs >> 4) & 0x0F;
+            }
+            return aval ^ mask;
+        }
+
+        // G.711 u-law Encoder Algorithm
+        function linearToMuLaw(pcm_val) {
+            const BIAS = 0x84; const CLIP = 32635;
+            let sign = (pcm_val >> 8) & 0x80;
+            if (sign != 0) pcm_val = -pcm_val;
+            if (pcm_val > CLIP) pcm_val = CLIP;
+            pcm_val += BIAS;
+            let exponent = 7;
+            for (let expMask = 0x4000; (pcm_val & expMask) == 0; expMask >>= 1) exponent--;
+            let mantissa = (pcm_val >> (exponent + 3)) & 0x0F;
+            let mu_val = ~(sign | (exponent << 4) | mantissa);
+            return mu_val & 0xFF;
+        }
+
+        // Construtor do Arquivo .WAV (RIFF Header)
+        function createWavBuffer(data, formatCode, bitsPerSample, sampleRate, byteRate, blockAlign) {
+            let isPcm = formatCode === 1;
+            let fmtChunkSize = isPcm ? 16 : 18; // G.711 precisa de cbSize (2 bytes adicionais)
+            let hasFact = !isPcm;
+            let factChunkSize = hasFact ? 12 : 0;
+            let dataChunkSize = data.byteLength;
+            let riffSize = 4 + (8 + fmtChunkSize) + factChunkSize + (8 + dataChunkSize);
+
+            const buffer = new ArrayBuffer(8 + riffSize);
+            const view = new DataView(buffer);
+            let offset = 0;
+
+            const writeStr = (str) => { for (let i = 0; i < str.length; i++) view.setUint8(offset++, str.charCodeAt(i)); };
+
+            writeStr("RIFF");
+            view.setUint32(offset, riffSize, true); offset += 4;
+            writeStr("WAVE");
+
+            // fmt chunk
+            writeStr("fmt ");
+            view.setUint32(offset, fmtChunkSize, true); offset += 4;
+            view.setUint16(offset, formatCode, true); offset += 2;
+            view.setUint16(offset, 1, true); offset += 2; // 1 channel (Mono)
+            view.setUint32(offset, sampleRate, true); offset += 4;
+            view.setUint32(offset, byteRate, true); offset += 4;
+            view.setUint16(offset, blockAlign, true); offset += 2;
+            view.setUint16(offset, bitsPerSample, true); offset += 2;
+
+            if (!isPcm) {
+                view.setUint16(offset, 0, true); offset += 2; // cbSize = 0
+                // fact chunk (obrigatório para G.711)
+                writeStr("fact");
+                view.setUint32(offset, 4, true); offset += 4;
+                view.setUint32(offset, data.length, true); offset += 4; // Sample count
+            }
+
+            // data chunk
+            writeStr("data");
+            view.setUint32(offset, dataChunkSize, true); offset += 4;
+
+            if (bitsPerSample === 8) {
+                new Uint8Array(buffer, offset).set(data);
+            } else {
+                new Int16Array(buffer, offset).set(data);
+            }
+
+            return buffer;
+        }
+
+        async function processAudio() {
+            const fileInput = document.getElementById('audio-upload');
+            const codecValue = document.getElementById('audio-codec').value;
+            const res = document.getElementById('audio-results');
+
+            if (!fileInput.files.length) return alert("Por favor, selecione um arquivo de áudio.");
+
+            const file = fileInput.files[0];
+            res.innerHTML = `> Iniciando conversão de: <b>${file.name}</b>`;
+
+            try {
+                const [codecSelect, srString] = codecValue.split('_');
+                const targetSampleRate = parseInt(srString, 10);
+
+                logAudioStatus("Lendo arquivo no navegador...");
+                const arrayBuffer = await file.arrayBuffer();
+
+                logAudioStatus("Decodificando áudio original (Web Audio API)...");
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+                logAudioStatus(`Realizando Downsampling para ${targetSampleRate}Hz Mono...`);
+                const offlineCtx = new OfflineAudioContext(1, audioBuffer.duration * targetSampleRate, targetSampleRate);
+                const source = offlineCtx.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(offlineCtx.destination);
+                source.start();
+                const resampled = await offlineCtx.startRendering();
+
+                logAudioStatus("Processando canais e convertendo codec...");
+                const channelData = resampled.getChannelData(0); // Pega Float32 array (-1.0 a 1.0)
+
+                let outData, formatCode, bitsPerSample, byteRate, blockAlign;
+
+                if (codecSelect === 'pcm16') {
+                    formatCode = 1; bitsPerSample = 16;
+                    outData = new Int16Array(channelData.length);
+                    for (let i = 0; i < channelData.length; i++) {
+                        let s = Math.max(-1, Math.min(1, channelData[i]));
+                        outData[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                    }
+                    byteRate = targetSampleRate * 2; blockAlign = 2;
+                } else {
+                    formatCode = codecSelect === 'alaw' ? 6 : 7;
+                    bitsPerSample = 8;
+                    outData = new Uint8Array(channelData.length);
+                    for (let i = 0; i < channelData.length; i++) {
+                        let s = Math.max(-1, Math.min(1, channelData[i]));
+                        let pcm16 = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                        outData[i] = codecSelect === 'alaw' ? linearToALaw(pcm16) : linearToMuLaw(pcm16);
+                    }
+                    byteRate = targetSampleRate; blockAlign = 1;
+                }
+
+                logAudioStatus("Gerando cabeçalho WAV (RIFF)...");
+                const wavBuffer = createWavBuffer(outData, formatCode, bitsPerSample, targetSampleRate, byteRate, blockAlign);
+                const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+
+                logAudioStatus("Download pronto!", false);
+
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ura_${file.name.split('.')[0]}_${codecValue}.wav`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+            } catch (err) {
+                console.error(err);
+                logAudioStatus("Erro durante a conversão: " + err.message, true);
+            }
+        }
+
+        // 12. LÓGICA: TEXT TO SPEECH (TTS)
+        let ttsVoices = [];
+
+        function populateVoices() {
+            ttsVoices = window.speechSynthesis.getVoices();
+            const voiceSelect = document.getElementById('tts-voice');
+            if (!voiceSelect) return;
+            voiceSelect.innerHTML = '';
+
+            ttsVoices.forEach((voice, i) => {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `${voice.name} (${voice.lang})`;
+
+                // Pré-selecionar voz baseado no idioma atual da aplicação
+                if (currentLang === 'pt-BR' && voice.lang.includes('pt-BR')) option.selected = true;
+                else if (currentLang === 'en-GB' && voice.lang.includes('en-GB')) option.selected = true;
+                else if (currentLang === 'es-CO' && voice.lang.includes('es')) option.selected = true;
+
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        function speakText() {
+            // Cancela se já estiver falando para evitar sobreposição
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+
+            const text = document.getElementById('tts-text').value;
+            if (text.trim() !== '') {
+                const utterance = new SpeechSynthesisUtterance(text);
+
+                const selectedVoiceIndex = document.getElementById('tts-voice').value;
+                if (selectedVoiceIndex && ttsVoices[selectedVoiceIndex]) {
+                    utterance.voice = ttsVoices[selectedVoiceIndex];
+                }
+
+                utterance.rate = parseFloat(document.getElementById('tts-rate').value);
+                utterance.pitch = parseFloat(document.getElementById('tts-pitch').value);
+
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function stopSpeech() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+        }
+
+        // 13. LÓGICA: URA TEMPLATES (MERMAID + SCRIPTS)
+        let currentUraTemplate = 'simple';
+
+        const URA_DATA = {
+            'simple': {
+                'pt-BR': {
+                    script: "Mensagem Principal:\n\"Olá, obrigado por ligar para a nossa central de atendimento.\nPara Falar com Vendas, tecle 1.\nPara Falar com Suporte Técnico, tecle 2.\nPara Falar com a Recepção, aguarde na linha.\"\n\nFila de Vendas:\n\"Você está sendo transferido para um de nossos consultores de vendas. Aguarde um instante.\"\n\nFila de Suporte:\n\"Você está sendo transferido para a equipe de suporte técnico. Todos os nossos analistas estão ocupados, por favor aguarde.\"",
+                    mermaid: `graph TD
+    A([Início da Chamada]) --> B[Mensagem de Saudação]
+    B --> C{Menu Principal}
+    C -->|Tecle 1| D[Fila: Vendas]
+    C -->|Tecle 2| E[Fila: Suporte]
+    C -->|Timeout| F[Fila: Recepção]
+    D --> G([Atendimento Humano])
+    E --> G
+    F --> G`
+                },
+                'en-GB': {
+                    script: "Main Menu:\n\"Hello, thank you for calling our contact centre.\nFor Sales, press 1.\nFor Technical Support, press 2.\nTo speak with the Receptionist, please hold the line.\"\n\nSales Queue:\n\"You are being transferred to one of our sales consultants. Please hold.\"\n\nSupport Queue:\n\"You are being transferred to the technical support team. All our analysts are currently busy, please wait.\"",
+                    mermaid: `graph TD
+    A([Call Start]) --> B[Greeting Message]
+    B --> C{Main Menu}
+    C -->|Press 1| D[Queue: Sales]
+    C -->|Press 2| E[Queue: Support]
+    C -->|Timeout| F[Queue: Reception]
+    D --> G([Human Agent])
+    E --> G
+    F --> G`
+                },
+                'es-CO': {
+                    script: "Menú Principal:\n\"Hola, gracias por llamar a nuestro centro de atención.\nPara Ventas, marque 1.\nPara Soporte Técnico, marque 2.\nPara hablar con Recepción, espere en la línea.\"\n\nCola de Ventas:\n\"Está siendo transferido a uno de nuestros consultores de ventas. Por favor, espere.\"\n\nCola de Soporte:\n\"Está siendo transferido al equipo de soporte técnico. Todos nuestros analistas están ocupados, por favor espere.\"",
+                    mermaid: `graph TD
+    A([Inicio de Llamada]) --> B[Mensaje de Saludo]
+    B --> C{Menú Principal}
+    C -->|Marque 1| D[Cola: Ventas]
+    C -->|Marque 2| E[Cola: Soporte]
+    C -->|Timeout| F[Cola: Recepción]
+    D --> G([Agente Humano])
+    E --> G
+    F --> G`
+                }
+            },
+            'advanced': {
+                'pt-BR': {
+                    script: "Saudação e Coleta de ID:\n\"Bem-vindo à nossa Central.\nPor favor, digite o seu CPF ou CNPJ seguido da tecla jogo da velha.\"\n\nValidação VIP (Backend):\n[Silêncio - Consulta Banco de Dados]\n\nMenu Principal:\n\"Para Financeiro e 2ª Via de Boleto, tecle 1.\nPara Cancelamentos, tecle 2.\nPara falar com um Atendente, tecle 9.\"\n\nSubmenu Financeiro (Autoatendimento):\n\"Enviamos um SMS para o seu número de cadastro com o link para a 2ª via do seu boleto. Agradecemos a ligação.\"",
+                    mermaid: `graph TD
+    A([Início]) --> B[Coleta CPF/CNPJ]
+    B --> C{Consulta DB CRM}
+    C -->|Cliente VIP| D[Fila de Prioridade VIP]
+    C -->|Cliente Normal| E{Menu Principal}
+    E -->|Tecle 1| F[Submenu: Financeiro]
+    E -->|Tecle 2| G[Fila: Retenção/Cancelamento]
+    E -->|Tecle 9| H[Fila: Geral]
+    F --> I[Autoatendimento: Envio de SMS via API]
+    I --> J([Fim da Chamada])
+    D --> K([Atendente])
+    G --> K
+    H --> K`
+                },
+                'en-GB': {
+                    script: "Greeting & ID Collection:\n\"Welcome to our Centre.\nPlease enter your Customer ID followed by the hash key.\"\n\nVIP Validation (Backend):\n[Silence - Database Query]\n\nMain Menu:\n\"For Billing and Invoices, press 1.\nFor Cancellations, press 2.\nTo speak with an Agent, press 9.\"\n\nBilling Submenu (Self-Service):\n\"We have sent an SMS to your registered mobile number with a link to your invoice. Thank you for calling.\"",
+                    mermaid: `graph TD
+    A([Start]) --> B[Collect Customer ID]
+    B --> C{CRM DB Query}
+    C -->|VIP Customer| D[Queue: VIP Priority]
+    C -->|Standard Customer| E{Main Menu}
+    E -->|Press 1| F[Submenu: Billing]
+    E -->|Press 2| G[Queue: Retention]
+    E -->|Press 9| H[Queue: General]
+    F --> I[Self-Service: Send SMS via API]
+    I --> J([End Call])
+    D --> K([Agent])
+    G --> K
+    H --> K`
+                },
+                'es-CO': {
+                    script: "Saludo y Captura de ID:\n\"Bienvenido a nuestro Centro.\nPor favor, ingrese su número de documento seguido de la tecla numeral.\"\n\nValidación VIP (Backend):\n[Silencio - Consulta de Base de Datos]\n\nMenú Principal:\n\"Para Facturación, marque 1.\nPara Cancelaciones, marque 2.\nPara hablar con un Asesor, marque 9.\"\n\nSubmenú de Facturación (Autoservicio):\n\"Hemos enviado un SMS a su celular registrado con el enlace de su factura. Gracias por llamar.\"",
+                    mermaid: `graph TD
+    A([Inicio]) --> B[Captura de ID]
+    B --> C{Consulta DB CRM}
+    C -->|Cliente VIP| D[Cola: Prioridad VIP]
+    C -->|Cliente Normal| E{Menú Principal}
+    E -->|Marque 1| F[Submenú: Facturación]
+    E -->|Marque 2| G[Cola: Retención]
+    E -->|Marque 9| H[Cola: General]
+    F --> I[Autoservicio: Enviar SMS vía API]
+    I --> J([Fin de la Llamada])
+    D --> K([Asesor Humano])
+    G --> K
+    H --> K`
+                }
+            },
+            'complex': {
+                'pt-BR': {
+                    script: "Reconhecimento de Fala (ASR):\n\"Olá! Sou a assistente virtual. Em poucas palavras, me diga como posso te ajudar hoje. Por exemplo, você pode dizer: 'Estou sem internet' ou 'Quero pagar minha fatura'.\"\n\nFallback de Erro (NLU):\n\"Desculpe, não consegui compreender. Vamos tentar pelo teclado. Para Suporte, tecle 1...\"\n\nPesquisa de Satisfação (Pós Atendimento):\n\"Sua opinião é muito importante. Avalie o atendimento que você acabou de receber com uma nota de 1 a 5, onde 1 é muito ruim e 5 é excelente.\"",
+                    mermaid: `graph TD
+    A([Início]) --> B[Verifica Horário de Funcionamento]
+    B -->|Fora de Horário| C[Mensagem Fechado] --> Z([Fim])
+    B -->|Dentro do Horário| D[Integração Speech-to-Text / NLU]
+    D --> E{Intenção Detectada?}
+    E -->|Financeiro| F[Integração API Bancária]
+    E -->|Suporte| G[Verifica Incidente Massivo na Região]
+    E -->|Não Entendeu| H[Fallback: Menu DTMF Padrão]
+    G -->|Incidente Sim| I[Aviso de Manutenção Preditiva] --> Z
+    G -->|Incidente Não| J[Transferência com Dados em Tela CTI]
+    F --> J
+    H --> J
+    J --> K([Atendente])
+    K -.-> L[Pesquisa de Satisfação CSAT]
+    L --> Z`
+                },
+                'en-GB': {
+                    script: "Speech Recognition (ASR):\n\"Hello! I'm your virtual assistant. In a few words, tell me how I can help you today. For example, you can say: 'I have no internet' or 'I want to pay my bill'.\"\n\nError Fallback (NLU):\n\"Sorry, I couldn't understand that. Let's try the keypad. For Support, press 1...\"\n\nCSAT Survey (Post-Call):\n\"Your opinion is very important. Please rate the service you just received from 1 to 5, where 1 is very poor and 5 is excellent.\"",
+                    mermaid: `graph TD
+    A([Start]) --> B[Check Business Hours]
+    B -->|Closed| C[Closed Message] --> Z([End Call])
+    B -->|Open| D[Speech-to-Text / NLU Integration]
+    D --> E{Intent Detected?}
+    E -->|Billing| F[Banking API Integration]
+    E -->|Support| G[Check Regional Mass Outage]
+    E -->|Not Understood| H[Fallback: Standard DTMF Menu]
+    G -->|Outage Yes| I[Predictive Maintenance Warning] --> Z
+    G -->|Outage No| J[Transfer with CTI Screen Pop]
+    F --> J
+    H --> J
+    J --> K([Agent])
+    K -.-> L[CSAT Survey]
+    L --> Z`
+                },
+                'es-CO': {
+                    script: "Reconocimiento de Voz (ASR):\n\"¡Hola! Soy su asistente virtual. En pocas palabras, dígame cómo puedo ayudarle hoy. Por ejemplo, puede decir: 'No tengo internet' o 'Quiero pagar mi factura'.\"\n\nError Fallback (NLU):\n\"Lo siento, no pude entender. Intentemos con el teclado. Para Soporte, marque 1...\"\n\nEncuesta CSAT (Post-Llamada):\n\"Su opinión es muy importante. Califique el servicio que acaba de recibir del 1 al 5, donde 1 es muy malo y 5 es excelente.\"",
+                    mermaid: `graph TD
+    A([Inicio]) --> B[Verificar Horario Comercial]
+    B -->|Cerrado| C[Mensaje de Fuera de Horario] --> Z([Fin])
+    B -->|Abierto| D[Integración Speech-to-Text / NLU]
+    D --> E{¿Intención Detectada?}
+    E -->|Facturación| F[Integración API Bancaria]
+    E -->|Soporte| G[Verificar Caída Masiva en la Región]
+    E -->|No Entendió| H[Fallback: Menú DTMF Estándar]
+    G -->|Caída Sí| I[Aviso de Mantenimiento Predictivo] --> Z
+    G -->|Caída No| J[Transferencia con Datos en Pantalla CTI]
+    F --> J
+    H --> J
+    J --> K([Asesor])
+    K -.-> L[Encuesta de Satisfacción CSAT]
+    L --> Z`
+                }
+            }
+        };
+
+        // Função responsável por carregar o Template
+        async function loadUraTemplate(type) {
+            currentUraTemplate = type;
+
+            // UI Update nos Botões
+            const buttons = ['simple', 'advanced', 'complex'];
+            buttons.forEach(b => {
+                const btn = document.getElementById(`btn-ura-${b}`);
+                if (b === type) {
+                    btn.className = "btn-primary py-3 px-8 font-bold flex items-center gap-2 flex-1 justify-center";
+                } else {
+                    btn.className = "btn-secondary py-3 px-8 font-bold flex items-center gap-2 flex-1 justify-center";
+                }
+
+                // Aplicar estilo retro forçado se necessário
+                if (currentTheme === 'retro' && b !== type) {
+                    btn.style.backgroundColor = '#c0c0c0';
+                }
+            });
+
+            // Recupera Dados Baseados na Linguagem e Tipo
+            const data = URA_DATA[type][currentLang];
+
+            // Popula o Script
+            document.getElementById('ura-script-text').value = data.script;
+
+            // Renderiza o Mermaid Dinamicamente
+            const container = document.getElementById('mermaid-container');
+            container.innerHTML = ''; // Limpa o render anterior
+
+            // Determina o tema do Mermaid baseado no nosso sistema
+            let mTheme = 'default';
+            let mVars = { fontFamily: 'Nunito' };
+
+            if (currentTheme === 'dark') {
+                mTheme = 'dark';
+            } else if (currentTheme === 'retro') {
+                mTheme = 'base';
+                mVars = { primaryColor: '#c0c0c0', primaryBorderColor: '#000000', lineColor: '#000000', textColor: '#000000', fontFamily: 'Courier New' };
+            } else if (currentTheme === 'matrix') {
+                mTheme = 'base';
+                mVars = { primaryColor: '#000000', primaryBorderColor: '#00FF41', lineColor: '#00FF41', textColor: '#00FF41', fontFamily: 'JetBrains Mono' };
+            } else if (currentTheme === 'bt') {
+                mTheme = 'default';
+                mVars = { primaryColor: '#f4f6f8', primaryBorderColor: '#6400aa', lineColor: '#6400aa', textColor: '#333333', fontFamily: 'Nunito' };
+            } else if (currentTheme === 'arsenal') {
+                mTheme = 'base';
+                mVars = { primaryColor: '#063672', primaryBorderColor: '#9C824A', lineColor: '#9C824A', textColor: '#ffffff', fontFamily: 'Nunito', primaryTextColor: '#ffffff', lineStrokeWidth: 2 };
+            }
+
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: mTheme,
+                themeVariables: mVars
+            });
+
+            try {
+                // Necessário criar um id único para o render do mermaid
+                const id = `mermaid-svg-${Date.now()}`;
+                const { svg } = await mermaid.render(id, data.mermaid);
+                container.innerHTML = svg;
+
+                // Força background transparente para encaixar nas nossas box
+                const svgElem = container.querySelector('svg');
+                if (svgElem) svgElem.style.background = 'transparent';
+
+            } catch (error) {
+                console.error("Erro ao renderizar Mermaid:", error);
+                container.innerHTML = `<p class="text-red-500 font-bold">Erro ao gerar diagrama.</p>`;
+            }
+        }
+
+        // Adicional: Copiar Texto do Script
+        function copyUraScript() {
+            const text = document.getElementById('ura-script-text').value;
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                alert(currentLang === 'pt-BR' ? 'Script copiado para a área de transferência!' : 'Script copied!');
+            });
+        }
+
+        // Integração bônus: Enviar script da URA direto para o Gerador TTS
+        function sendUraToTts() {
+            const text = document.getElementById('ura-script-text').value;
+            if (!text) return;
+
+            document.getElementById('tts-text').value = text.replace(/\[.*?\]/g, ""); // Remove instruções como [Silêncio]
+            switchView('tts');
+        }
+
+    </script>
+</body>
+
+</html>
